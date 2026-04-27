@@ -13,7 +13,7 @@ title: "Generalización"
 El exceso de riesgo sobre el predictor de Bayes $R^{∗}$ se descompone exactamente:
 
 $$
-\boxed{R(\hat{f}) - R^{∗} = \underbrace{(R(f\_{\mathcal{H}}^{∗}) - R^{∗})}\_{{\varepsilon\_{\text{approx}}}} + \underbrace{(R(\hat{f}) - R(f\_{\mathcal{H}}^{∗}))}\_{{\varepsilon\_{\text{estim}}}}}
+\boxed{R(\hat{f}) - R^{∗} = \underbrace{(R(f\_{\mathcal{H}}^{∗}) - R^{∗})}\_{\varepsilon\_{\text{approx}}} + \underbrace{(R(\hat{f}) - R(f\_{\mathcal{H}}^{∗}))}\_{\varepsilon\_{\text{estim}}}}
 $$
 
 donde $f\_{\mathcal{H}}^{∗} = \arg\min_{f \in \mathcal{H}} R(f)$ es el mejor elemento de $\mathcal{H}$ bajo el riesgo verdadero.

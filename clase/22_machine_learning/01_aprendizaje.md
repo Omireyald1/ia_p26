@@ -129,7 +129,7 @@ Todo el módulo gira en torno a una pregunta: ¿cuánto se aleja $R(\hat{f})$ de
 Podemos descomponer el exceso de riesgo en dos componentes (detalle completo en 22.2):
 
 $$
-R(\hat{f}) - R^{∗} = \underbrace{(R(f\_{\mathcal{H}}^{∗}) - R^{∗})}\_{{\varepsilon\_{\text{approx}}}} + \underbrace{(R(\hat{f}) - R(f\_{\mathcal{H}}^{∗}))}\_{{\varepsilon\_{\text{estim}}}}
+R(\hat{f}) - R^{∗} = \underbrace{(R(f\_{\mathcal{H}}^{∗}) - R^{∗})}\_{\varepsilon\_{\text{approx}}} + \underbrace{(R(\hat{f}) - R(f\_{\mathcal{H}}^{∗}))}\_{\varepsilon\_{\text{estim}}}
 $$
 
 - **$\varepsilon_{\text{approx}}$** (error de aproximación): ¿qué tan bien puede $\mathcal{H}$ representar a $f^{∗}$? Controlado por la capacidad de $\mathcal{H}$.
