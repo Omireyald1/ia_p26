@@ -10,25 +10,25 @@ title: "Evaluación y selección de modelos"
 
 ## El sesgo del error de entrenamiento
 
-**Proposición.** Para cualquier modelo $\hat{f}$ ajustado a $\mathcal{D}_{\text{train}}$,
+**Proposición.** Para cualquier modelo $\hat{f}$ ajustado a $\mathcal{D}\_{\text{train}}$,
 
 $$
-\mathbb{E}_{\mathcal{D}}[\hat{R}(\hat{f}; \mathcal{D}_{\text{train}})] \leq R(\hat{f})
+\mathbb{E}\_{\mathcal{D}}[\hat{R}(\hat{f}; \mathcal{D}\_{\text{train}})] \leq R(\hat{f})
 $$
 
-**Prueba.** Sea $\hat{f} = \arg\min_{f \in \mathcal{H}} \hat{R}(f; \mathcal{D}_{\text{train}})$. Para cualquier $f_0 \in \mathcal{H}$ fija (que no depende de $\mathcal{D}$):
+**Prueba.** Sea $\hat{f} = \arg\min_{f \in \mathcal{H}} \hat{R}(f; \mathcal{D}\_{\text{train}})$. Para cualquier $f_0 \in \mathcal{H}$ fija (que no depende de $\mathcal{D}$):
 
 $$
-\hat{R}(\hat{f}; \mathcal{D}_{\text{train}}) \leq \hat{R}(f_0; \mathcal{D}_{\text{train}})
+\hat{R}(\hat{f}; \mathcal{D}\_{\text{train}}) \leq \hat{R}(f_0; \mathcal{D}\_{\text{train}})
 $$
 
 por definición de $\hat{f}$ como minimizador. Tomando esperanza:
 
 $$
-\mathbb{E}[\hat{R}(\hat{f}; \mathcal{D}_{\text{train}})] \leq \mathbb{E}[\hat{R}(f_0; \mathcal{D}_{\text{train}})] = R(f_0)
+\mathbb{E}[\hat{R}(\hat{f}; \mathcal{D}\_{\text{train}})] \leq \mathbb{E}[\hat{R}(f_0; \mathcal{D}\_{\text{train}})] = R(f_0)
 $$
 
-el último paso usa que $f_0$ no depende de $\mathcal{D}$, así que la esperanza del riesgo empírico es el riesgo verdadero. Como esto vale para cualquier $f_0$, también vale para $\hat{f}_0 = \arg\min R(f)$, y en particular $\mathbb{E}[\hat{R}(\hat{f}; \mathcal{D}_{\text{train}})] \leq R(\hat{f})$. $\square$
+el último paso usa que $f_0$ no depende de $\mathcal{D}$, así que la esperanza del riesgo empírico es el riesgo verdadero. Como esto vale para cualquier $f_0$, también vale para $\hat{f}\_0 = \arg\min R(f)$, y en particular $\mathbb{E}[\hat{R}(\hat{f}; \mathcal{D}\_{\text{train}})] \leq R(\hat{f})$. $\square$
 
 Consecuencia: **el error de entrenamiento sistemáticamente subestima el error verdadero**. El grado de sesgo crece con la capacidad de $\mathcal{H}$ — con $d_{\text{VC}}$ grande, el optimizador puede hacer $\hat{R}$ arbitrariamente pequeño aunque $R$ permanezca grande.
 
@@ -40,15 +40,15 @@ El panel izquierdo muestra que la distribución de error de entrenamiento (sobre
 
 ## Los tres conjuntos de datos
 
-Dado el sesgo del error de entrenamiento, necesitamos datos **no usados en el ajuste** para estimar $R(\hat{f})$. Pero también necesitamos datos separados para elegir hiperparámetros — porque usar $\mathcal{D}_{\text{test}}$ para eso contamina la estimación final.
+Dado el sesgo del error de entrenamiento, necesitamos datos **no usados en el ajuste** para estimar $R(\hat{f})$. Pero también necesitamos datos separados para elegir hiperparámetros — porque usar $\mathcal{D}\_{\text{test}}$ para eso contamina la estimación final.
 
 | Conjunto | Propósito | Puede ver |
 |----------|-----------|-----------|
-| $\mathcal{D}_{\text{train}}$ | Ajustar $\theta$ | Sí, repetidamente |
-| $\mathcal{D}_{\text{val}}$ | Elegir hiperparámetros ($\lambda$, grado, ...) | Una vez por configuración |
-| $\mathcal{D}_{\text{test}}$ | Reportar $R(\hat{f})$ final | **Una sola vez, al final** |
+| $\mathcal{D}\_{\text{train}}$ | Ajustar $\theta$ | Sí, repetidamente |
+| $\mathcal{D}\_{\text{val}}$ | Elegir hiperparámetros ($\lambda$, grado, ...) | Una vez por configuración |
+| $\mathcal{D}\_{\text{test}}$ | Reportar $R(\hat{f})$ final | **Una sola vez, al final** |
 
-**Por qué $\mathcal{D}_{\text{val}} \neq \mathcal{D}_{\text{test}}$.** Si usamos $\mathcal{D}_{\text{test}}$ para seleccionar $\lambda^*$, el procedimiento completo ha hecho búsqueda sobre $\mathcal{D}_{\text{test}}$. El error reportado ya no es una estimación insesgada de $R$ — es tan optimista como el error de entrenamiento. Esto invalida cualquier garantía de generalización.
+**Por qué $\mathcal{D}\_{\text{val}} \neq \mathcal{D}\_{\text{test}}$.** Si usamos $\mathcal{D}\_{\text{test}}$ para seleccionar $\lambda^{∗}$, el procedimiento completo ha hecho búsqueda sobre $\mathcal{D}\_{\text{test}}$. El error reportado ya no es una estimación insesgada de $R$ — es tan optimista como el error de entrenamiento. Esto invalida cualquier garantía de generalización.
 
 ---
 
@@ -92,7 +92,7 @@ Entrada: D, fracciones α_tr, α_val, Λ (cuadrícula de hiperparámetros)
 ───────────────────────────────────────────────────────────
 ```
 
-**Nota**: el paso 5 puede re-entrenar con $\mathcal{D}_{\text{train}} \cup \mathcal{D}_{\text{val}}$ y $\lambda^*$ fijo, aprovechando todos los datos para el modelo final. El error reportado sigue siendo $\hat{R}(\hat{\theta}; \mathcal{D}_{\text{test}})$.
+**Nota**: el paso 5 puede re-entrenar con $\mathcal{D}\_{\text{train}} \cup \mathcal{D}\_{\text{val}}$ y $\lambda^{∗}$ fijo, aprovechando todos los datos para el modelo final. El error reportado sigue siendo $\hat{R}(\hat{\theta}; \mathcal{D}\_{\text{test}})$.
 
 ---
 

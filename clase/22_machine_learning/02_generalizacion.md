@@ -10,19 +10,19 @@ title: "Generalización"
 
 ## A — Descomposición del error
 
-El exceso de riesgo sobre el predictor de Bayes $R^*$ se descompone exactamente:
+El exceso de riesgo sobre el predictor de Bayes $R^{∗}$ se descompone exactamente:
 
 $$
-\boxed{R(\hat{f}) - R^* = \underbrace{(R(f_{\mathcal{H}}^*) - R^*)}_{\varepsilon_{\text{approx}}} + \underbrace{(R(\hat{f}) - R(f_{\mathcal{H}}^*))}_{\varepsilon_{\text{estim}}}}
+\boxed{R(\hat{f}) - R^{∗} = \underbrace{(R(f\_{\mathcal{H}}^{∗}) - R^{∗})}\_{{\varepsilon\_{\text{approx}}}} + \underbrace{(R(\hat{f}) - R(f\_{\mathcal{H}}^{∗}))}\_{{\varepsilon\_{\text{estim}}}}}
 $$
 
-donde $f_{\mathcal{H}}^* = \arg\min_{f \in \mathcal{H}} R(f)$ es el mejor elemento de $\mathcal{H}$ bajo el riesgo verdadero.
+donde $f\_{\mathcal{H}}^{∗} = \arg\min_{f \in \mathcal{H}} R(f)$ es el mejor elemento de $\mathcal{H}$ bajo el riesgo verdadero.
 
 | Componente | Qué mide | Controlado por |
 |------------|----------|---------------|
 | $\varepsilon_{\text{approx}}$ | Capacidad de la clase $\mathcal{H}$ | Tamaño/complejidad de $\mathcal{H}$ |
 | $\varepsilon_{\text{estim}}$ | Muestras finitas, búsqueda en $\mathcal{H}$ | Tamaño $m$ del dataset |
-| $R^*$ | Ruido irreducible | Naturaleza del problema |
+| $R^{∗}$ | Ruido irreducible | Naturaleza del problema |
 
 ### El dilema de capacidad
 
@@ -88,10 +88,10 @@ El multiplicador de Lagrange $\lambda \geq 0$ **controla el intercambio** entre 
 - $\lambda \to \infty$: $\theta \to 0$ → underfitting.
 - $\lambda$ óptimo: equilibra $\varepsilon_{\text{approx}}$ y $\varepsilon_{\text{estim}}$.
 
-**Definición.** Los **hiperparámetros** son parámetros como $\lambda$ que controlan la capacidad o regularización del modelo. No pueden fijarse minimizando $\hat{R}(\theta; \mathcal{D}_{\text{train}})$ — hacerlo daría $\lambda = 0$ (la restricción siempre se relaja con más parámetros). Requieren datos separados de entrenamiento. Esto motiva directamente la sección 22.3.
+**Definición.** Los **hiperparámetros** son parámetros como $\lambda$ que controlan la capacidad o regularización del modelo. No pueden fijarse minimizando $\hat{R}(\theta; \mathcal{D}\_{\text{train}})$ — hacerlo daría $\lambda = 0$ (la restricción siempre se relaja con más parámetros). Requieren datos separados de entrenamiento. Esto motiva directamente la sección 22.3.
 
 $$
-\boxed{\lambda \text{ es un hiperparámetro}: \quad \lambda^* = \arg\min_{\lambda \geq 0} R(\hat{\theta}_\lambda) \quad \text{estimado con } \mathcal{D}_{\text{val}}}
+\boxed{\lambda \text{ es un hiperparámetro}: \quad \lambda^{∗} = \arg\min_{\lambda \geq 0} R(\hat{\theta}\_\lambda) \quad \text{estimado con } \mathcal{D}\_{\text{val}}}
 $$
 
 ### Ridge regression: solución cerrada
@@ -113,7 +113,7 @@ $$
 $$
 
 $$
-\boxed{\theta^* = \left(\frac{1}{m}\mathbf{X}^\top\mathbf{X} + \lambda\mathbf{I}\right)^{-1} \frac{1}{m}\mathbf{X}^\top\mathbf{y}}
+\boxed{\theta^{∗} = \left(\frac{1}{m}\mathbf{X}^\top\mathbf{X} + \lambda\mathbf{I}\right)^{-1} \frac{1}{m}\mathbf{X}^\top\mathbf{y}}
 $$
 
 La adición de $\lambda\mathbf{I}$ garantiza que la matriz sea invertible para todo $\lambda > 0$, incluso cuando $\mathbf{X}^\top\mathbf{X}$ es singular (caso $m < d$). Esto es **ridge regression**.
@@ -132,7 +132,7 @@ La línea punteada en $\sigma^2 = 0.09$ es el **error de Bayes** — el piso irr
 
 ![Ridge regression: curvas ajustadas y U-curva en $\lambda$]({{ '/22_machine_learning/images/05_ridge_curves.png' | url }})
 
-El panel superior muestra cómo $\lambda$ grande "aplana" la curva de grado 14. El panel inferior muestra la U-curva característica: existe un $\lambda^*$ que minimiza el test MSE.
+El panel superior muestra cómo $\lambda$ grande "aplana" la curva de grado 14. El panel inferior muestra la U-curva característica: existe un $\lambda^{∗}$ que minimiza el test MSE.
 
 ### Tabla comparativa: sin regularización vs. ridge
 
@@ -141,7 +141,7 @@ El panel superior muestra cómo $\lambda$ grande "aplana" la curva de grado 14. 
 | Sesgo | Bajo | Mayor (si $\lambda$ grande) |
 | Varianza | Alta | Menor |
 | Invertibilidad | Falla si $m < d$ | Siempre invertible |
-| $\lambda$ elegido por | — | $\mathcal{D}_{\text{val}}$ |
+| $\lambda$ elegido por | — | $\mathcal{D}\_{\text{val}}$ |
 
 ---
 

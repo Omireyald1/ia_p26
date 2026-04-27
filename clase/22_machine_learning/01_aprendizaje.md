@@ -25,24 +25,24 @@ El objetivo es aprender una función $f: \mathcal{X} \to \mathcal{Y}$ que predig
 El **riesgo verdadero** (o error de generalización) de una función $f$ es:
 
 $$
-\boxed{R(f) = \mathbb{E}_{(x,y) \sim p_{\text{data}}}[L(f(x), y)]}
+\boxed{R(f) = \mathbb{E}\_{(x,y) \sim p\_{\text{data}}}[L(f(x), y)]}
 $$
 
 Este es el objeto que queremos minimizar. El problema: $p_{\text{data}}$ es desconocida. No podemos computar $R(f)$ directamente.
 
 ### El predictor de Bayes
 
-El mínimo posible de $R(f)$ sobre todas las funciones medibles define el **error de Bayes** $R^*$:
+El mínimo posible de $R(f)$ sobre todas las funciones medibles define el **error de Bayes** $R^{∗}$:
 
 $$
-R^* = \min_{f} R(f), \qquad f^*(x) = \arg\min_{y'} \mathbb{E}[L(y', y) \mid x]
+R^{∗} = \min_{f} R(f), \qquad f^{∗}(x) = \arg\min_{y'} \mathbb{E}[L(y', y) \mid x]
 $$
 
-Para MSE: $f^*(x) = \mathbb{E}[y \mid x]$. Para 0-1 loss: $f^*(x) = \arg\max_c P(y=c \mid x)$. El error de Bayes $R^* > 0$ cuando $y$ tiene ruido irreducible dado $x$ — no hay modelo que lo elimine.
+Para MSE: $f^{∗}(x) = \mathbb{E}[y \mid x]$. Para 0-1 loss: $f^{∗}(x) = \arg\max_c P(y=c \mid x)$. El error de Bayes $R^{∗} > 0$ cuando $y$ tiene ruido irreducible dado $x$ — no hay modelo que lo elimine.
 
 ### El riesgo empírico
 
-Solo tenemos un conjunto de entrenamiento $\mathcal{D} = \{(x^{(i)}, y^{(i)})\}_{i=1}^m$, i.i.d. de $p_{\text{data}}$. Definimos el **riesgo empírico**:
+Solo tenemos un conjunto de entrenamiento $\mathcal{D} = \{(x^{(i)}, y^{(i)})\}\_{i=1}^m$, i.i.d. de $p\_{\text{data}}$. Definimos el **riesgo empírico**:
 
 $$
 \boxed{\hat{R}(f; \mathcal{D}) = \frac{1}{m} \sum_{i=1}^{m} L(f(x^{(i)}), y^{(i)})}
@@ -65,7 +65,7 @@ $$
 **Definición.** Los **parámetros** $\theta$ son las variables internas del modelo aprendidas por minimizar $\hat{R}$ sobre los datos de entrenamiento.
 
 $$
-\boxed{\theta^* = \arg\min_{\theta} \hat{R}(f_\theta; \mathcal{D}_{\text{train}})}
+\boxed{\theta^{∗} = \arg\min_{\theta} \hat{R}(f_\theta; \mathcal{D}\_{\text{train}})}
 $$
 
 **Definición.** Los **hiperparámetros** son cantidades que controlan la capacidad o la regularización del modelo y que **no se pueden fijar minimizando $\hat{R}$** — hacerlo introduce sesgo. Deben elegirse con datos separados.
@@ -90,7 +90,7 @@ $$
 \hat{R}(\theta, b; \mathcal{D}) = \frac{1}{m} \sum_{i=1}^m (x^{(i)\top}\theta + b - y^{(i)})^2 = \frac{1}{m}\|\mathbf{X}\theta - \mathbf{y}\|^2
 $$
 
-El mínimo sin restricciones tiene solución cerrada: $\theta^* = (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{y}$.
+El mínimo sin restricciones tiene solución cerrada: $\theta^{∗} = (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{y}$.
 
 ### Regresión logística (clasificación binaria)
 
@@ -118,21 +118,21 @@ Tom Mitchell (1997) definió ML de forma operacional: un programa aprende de la 
 | **P** (Desempeño) | MSE en datos nuevos | Exactitud / log-loss en datos nuevos |
 | **E** (Experiencia) | Pares $(x^{(i)}, y^{(i)})$ i.i.d. | Pares $(x^{(i)}, y^{(i)})$ i.i.d. |
 
-La definición es útil porque **P se mide sobre datos no vistos** — no sobre $\mathcal{D}_{\text{train}}$. Esto anticipa exactamente el problema de generalización.
+La definición es útil porque **P se mide sobre datos no vistos** — no sobre $\mathcal{D}\_{\text{train}}$. Esto anticipa exactamente el problema de generalización.
 
 ---
 
 ## El riesgo como hoja de ruta
 
-Todo el módulo gira en torno a una pregunta: ¿cuánto se aleja $R(\hat{f})$ de $R^*$?
+Todo el módulo gira en torno a una pregunta: ¿cuánto se aleja $R(\hat{f})$ de $R^{∗}$?
 
 Podemos descomponer el exceso de riesgo en dos componentes (detalle completo en 22.2):
 
 $$
-R(\hat{f}) - R^* = \underbrace{(R(f_{\mathcal{H}}^*) - R^*)}_{\varepsilon_{\text{approx}}} + \underbrace{(R(\hat{f}) - R(f_{\mathcal{H}}^*))}_{\varepsilon_{\text{estim}}}
+R(\hat{f}) - R^{∗} = \underbrace{(R(f\_{\mathcal{H}}^{∗}) - R^{∗})}\_{{\varepsilon\_{\text{approx}}}} + \underbrace{(R(\hat{f}) - R(f\_{\mathcal{H}}^{∗}))}\_{{\varepsilon\_{\text{estim}}}}
 $$
 
-- **$\varepsilon_{\text{approx}}$** (error de aproximación): ¿qué tan bien puede $\mathcal{H}$ representar a $f^*$? Controlado por la capacidad de $\mathcal{H}$.
+- **$\varepsilon_{\text{approx}}$** (error de aproximación): ¿qué tan bien puede $\mathcal{H}$ representar a $f^{∗}$? Controlado por la capacidad de $\mathcal{H}$.
 - **$\varepsilon_{\text{estim}}$** (error de estimación): dado que usamos datos finitos, ¿cuánto se aleja $\hat{f}$ del mejor de $\mathcal{H}$? Controlado por $m$ y la complejidad de $\mathcal{H}$.
 
 Esta tensión — más capacidad reduce $\varepsilon_{\text{approx}}$ pero aumenta $\varepsilon_{\text{estim}}$ — es el **dilema fundamental** del aprendizaje automático.
