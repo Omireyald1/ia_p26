@@ -8,6 +8,29 @@ title: "Aprendizaje Automático"
 
 ---
 
+## Estructura del módulo
+
+| Parte | Sección | Título | Núcleo matemático |
+|-------|---------|--------|-------------------|
+| I | [22.1](01_aprendizaje.md) | El problema de aprendizaje | $R(f)$, $\hat{R}$, i.i.d., parámetros vs. hiperparámetros |
+| II | [22.2](02_generalizacion.md) | Generalización | $\varepsilon_{\text{approx}} + \varepsilon_{\text{estim}}$, VC, Lagrangiano, ridge |
+| III | [22.3](03_evaluacion.md) | Evaluación y selección de modelos | Alg. 22.1/22.2/22.3, sesgo del entrenamiento, k-fold |
+| IV | [22.4](04_estimadores.md) | Fundamentos estadísticos | Bias²+Var+σ², MLE=KL, MSE↔Gauss, CE↔Bernoulli |
+| V | [22.5](05_desafios.md) | Desafíos y motivación profunda | Maldición, constancia local, manifold, bridge a DL |
+
+---
+
+## Materiales y flujo de trabajo
+
+| Paso | Material | Colab | Descripción |
+|------|----------|-------|-------------|
+| 1 | [Lecturas](a_lecturas.md) | — | Capítulo 5 de Goodfellow et al. (pre-clase) |
+| 2 | Secciones 22.1–22.5 | — | Marco teórico completo con plots |
+| 3 | [Notebook 01](notebooks/01_evaluacion.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sonder-art/ia_p26/blob/main/clase/22_machine_learning/notebooks/01_evaluacion.ipynb) | Alg. 22.1–22.3 desde cero, sesgo, U-curva, bias-var |
+| 4 | `lab_ml.py` | — | `cd clase/22_machine_learning && python3 lab_ml.py` |
+
+---
+
 En los módulos anteriores tratamos el mundo como **conocido**: en decisión (Módulo 9) asumimos distribuciones dadas, en programación dinámica (Módulo 21) conocíamos costos y transiciones, en HMMs (Módulo 20) conocíamos parámetros. Pero en la realidad, **los parámetros rara vez están ahí servidos**. Están escondidos en datos, y hay que extraerlos.
 
 El aprendizaje automático (*machine learning*, ML) es el toolkit que responde exactamente esa pregunta: cómo aprender patrones a partir de datos. En este curso lo ocupamos por dos razones:
@@ -74,5 +97,12 @@ graph TD
 3. **En clase**: vamos a discutir, aclarar dudas, y conectar la lectura con lo que sigue.
 
 ---
+
+**Secciones:**
+[22.1 El problema de aprendizaje →](01_aprendizaje.md) ·
+[22.2 Generalización →](02_generalizacion.md) ·
+[22.3 Evaluación →](03_evaluacion.md) ·
+[22.4 Estimadores →](04_estimadores.md) ·
+[22.5 Desafíos →](05_desafios.md)
 
 **Siguiente:** [Lecturas →](a_lecturas.md)

@@ -234,3 +234,6 @@ CLAUDE.md
 openspec/
 .claude/
 clase/exams
+
+.claude/commands
+.claude/skills
