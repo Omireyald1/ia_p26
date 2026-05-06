@@ -7,8 +7,8 @@ summary: "Comparativa SARSA vs Q-learning, límites de la tabla Q, función de a
 
 | Dimensión | SARSA | Q-learning |
 |-----------|-------|------------|
-| **Regla de actualización** | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma Q(s',a') - Q(s,a)]$ | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma \max_{a'} Q(s',a') - Q(s,a)]$ |
-| **Target** | $r + \gamma Q(s', a')$ — con $a' \sim \pi_\varepsilon$ | $r + \gamma \max_{a'} Q(s', a')$ — máximo sobre $s'$ |
+| **Regla de actualización** | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma Q(s',a') - Q(s,a)]$ | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma \max_b Q(s',b) - Q(s,a)]$ |
+| **Target** | $r + \gamma Q(s', a')$ — con $a' \sim \pi_\varepsilon$ | $r + \gamma \max_b Q(s', b)$ — máximo sobre $s'$ |
 | **Política de comportamiento** $\mu$ | $\varepsilon$-greedy | $\varepsilon$-greedy |
 | **Política objetivo** $\pi$ | $\varepsilon$-greedy ($\mu = \pi$) | greedy pura ($\mu \neq \pi$) |
 | **Clasificación** | On-policy | Off-policy |
@@ -74,7 +74,7 @@ Esto da lugar a dos familias de algoritmos modernos:
 
 **Off-policy + función aprox.** → **DQN (Deep Q-Network)**
 - Usa una red neuronal para $f_\theta(s,a)$.
-- Mismo principio que Q-learning: el target usa $\max_{a'}$.
+- Mismo principio que Q-learning: el target usa $\max_b$.
 - Novedades: experience replay (rompe correlaciones entre muestras) y red objetivo congelada (estabiliza el target).
 - Logró rendimiento humano en 49 juegos de Atari (DeepMind, 2015).
 
@@ -116,7 +116,7 @@ Empezamos con la pregunta que quedó sin respuesta en el módulo 21:
 
 La respuesta es: interactúa con el ambiente, observa $(s, a, r, s')$, y usa la actualización TD para empujar $Q$ hacia la consistencia de Bellman.
 
-La diferencia entre SARSA y Q-learning se reduce a un símbolo: $Q(s',a')$ vs $\max_{a'} Q(s',a')$.
+La diferencia entre SARSA y Q-learning se reduce a un símbolo: $Q(s',a')$ vs $\max_b Q(s',b)$.
 Ese símbolo determina si el algoritmo aprende el valor de lo que hace (on-policy, SARSA) o el valor de lo que podría hacer óptimamente (off-policy, Q-learning).
 
 Ambos convergen a $Q^∗$ con suficiente experiencia y $\varepsilon \to 0$.

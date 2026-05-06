@@ -9,8 +9,8 @@ Q-learning y SARSA son idénticos excepto por **un símbolo** en la regla de act
 
 | | SARSA | Q-learning |
 |--|-------|------------|
-| Actualización | $Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \mathbf{Q(s', a')} - Q(s,a)\bigr]$ | $Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \mathbf{\max_{a'} Q(s', a')} - Q(s,a)\bigr]$ |
-| Siguiente valor | $Q(s', a')$ donde $a' \sim \pi_\varepsilon$ | $\max_{a'} Q(s', a')$ |
+| Actualización | $Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \mathbf{Q(s', a')} - Q(s,a)\bigr]$ | $Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \mathbf{\max_b Q(s', b)} - Q(s,a)\bigr]$ |
+| Siguiente valor | $Q(s', a')$ donde $a' \sim \pi_\varepsilon$ | $\max_b Q(s', b)$ |
 | Datos necesarios | Quíntuple $(S, A, R, S', A')$ | Cuádruplo $(S, A, R, S')$ |
 
 La diferencia es que Q-learning no necesita observar $a'$ — toma el máximo directamente.
@@ -20,7 +20,7 @@ Eso lo hace **off-policy**: no importa qué acción ejecute el agente en $s'$, s
 
 ## Regla de actualización
 
-$$\boxed{Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \max_{a'} Q(s', a') - Q(s,a)\bigr]}$$
+$$\boxed{Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \max_b Q(s', b) - Q(s,a)\bigr]}$$
 
 ---
 
@@ -52,10 +52,10 @@ Con los mismos parámetros ($\alpha=0.5$, $\gamma=1$, $\varepsilon=0.4$) y las m
 
 ### Episodio 1: trayectoria $0 \to 1 \to 3 \to 5$
 
-Todos los valores son cero; $\max_{a'} Q(s', a') = 0$ en todos los casos.
+Todos los valores son cero; $\max_b Q(s', b) = 0$ en todos los casos.
 Las actualizaciones son idénticas a SARSA:
 
-| Paso | $s$ | $a$ | $r$ | $s'$ | $\max_{a'} Q(s', a')$ | $\delta$ | Actualización |
+| Paso | $s$ | $a$ | $r$ | $s'$ | $\max_b Q(s', b)$ | $\delta$ | Actualización |
 |------|-----|-----|-----|------|----------------------|----------|---------------|
 | 1 | 0 | $+1$ | $-2$ | 1 | $\max(0, 0) = 0$ | $-2$ | $Q(0,+1) = -1.0$ |
 | 2 | 1 | $+2$ | $-10$ | 3 | $\max(0, 0) = 0$ | $-10$ | $Q(1,+2) = -5.0$ |
@@ -66,7 +66,7 @@ Las actualizaciones son idénticas a SARSA:
 De nuevo, los valores relevantes en $s'$ son cero o coinciden con el máximo.
 Las actualizaciones son idénticas a SARSA:
 
-| Paso | $s$ | $a$ | $r$ | $s'$ | $\max_{a'} Q(s', a')$ | $\delta$ | Actualización |
+| Paso | $s$ | $a$ | $r$ | $s'$ | $\max_b Q(s', b)$ | $\delta$ | Actualización |
 |------|-----|-----|-----|------|----------------------|----------|---------------|
 | 1 | 0 | $+2$ | $-5$ | 2 | $\max(0, 0) = 0$ | $-5$ | $Q(0,+2) = -2.5$ |
 | 2 | 2 | $+2$ | $-1$ | 4 | $\max(0, \text{—}) = 0$ | $-1$ | $Q(2,+2) = -0.5$ |
@@ -80,7 +80,7 @@ Desde $s=0$, $\varepsilon$-greedy elige $a=+2$ (exploración).
 El ambiente devuelve $s'=2$, $r=-5$.
 
 **Q-learning** toma el máximo sobre $s'=2$:
-$$\max_{a'} Q(2, a') = \max(Q(2,+1), Q(2,+2)) = \max(0, -0.5) = 0$$
+$$\max_b Q(2, b) = \max(Q(2,+1), Q(2,+2)) = \max(0, -0.5) = 0$$
 $$\delta_{\text{QL}} = -5 + 0 - (-2.5) = -2.5$$
 $$Q(0,+2) \leftarrow -2.5 + 0.5 \cdot (-2.5) = -3.75$$
 

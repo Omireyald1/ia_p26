@@ -71,15 +71,17 @@ La pregunta que queda abierta: ¿qué ponemos en el `?`?
 
 Del módulo 21 y de la página anterior, recordamos:
 
-$$Q^\pi(s,a) = \mathbb{E}_{\substack{s' \sim T \\ a' \sim \pi}}\bigl[r + \gamma Q^\pi(s', a')\bigr] \tag{Eq. 1}$$
+$$Q^\pi(s,a) = \mathbb{E}_{s' \sim T, a' \sim \pi}\bigl[r + \gamma Q^\pi(s', a')\bigr] \tag{Eq. 1}$$
 
-$$Q^∗(s,a) = \mathbb{E}_{s' \sim T}\bigl[r + \gamma \max_{a'} Q^∗(s', a')\bigr] \tag{Eq. 2}$$
+$$Q^∗(s,a) = \mathbb{E}_{s' \sim T}\bigl[r + \gamma \max_b Q^∗(s', b)\bigr] \tag{Eq. 2}$$
+
+($b$ es la variable muda de optimización — equivalente a $a'$ en la notación estándar)
 
 Colocadas juntas, la diferencia salta a la vista:
 
 | | Eq. 1 — valor de $\pi$ | Eq. 2 — valor óptimo |
 |--|------------------------|----------------------|
-| Valor futuro en $s'$ | $Q^\pi(s', a')$ con $a' \sim \pi$ | $\max_{a'} Q^∗(s', a')$ |
+| Valor futuro en $s'$ | $Q^\pi(s', a')$ con $a' \sim \pi$ | $\max_b Q^∗(s', b)$ |
 | Pregunta que responde | ¿Cuánto vale seguir mi política actual? | ¿Cuánto vale hacer lo mejor posible? |
 | Converge a | $Q^\pi$ — depende de $\pi$ | $Q^∗$ — óptimo global |
 
@@ -100,7 +102,7 @@ Apunta a la ecuación (1): aprende el valor de la política que se está ejecuta
 
 **Opción B — usa el máximo sobre todas las acciones de $s'$**:
 
-$$\textbf{?} = \max_{a'} Q(s', a') \qquad \Longrightarrow \quad \text{Q-learning}$$
+$$\textbf{?} = \max_b Q(s', b) \qquad \Longrightarrow \quad \text{Q-learning}$$
 
 Apunta a la ecuación (2): aprende el valor óptimo, sin importar qué acción ejecuta el agente.
 
@@ -195,7 +197,7 @@ $$Q(2,+1) = 0 \qquad Q(2,+2) = -0.5$$
 
 No importa qué acción se ejecutará realmente — toma el mejor caso posible:
 
-$$\textbf{?} = \max_{a'} Q(2, a') = \max(0,\ -0.5) = 0$$
+$$\textbf{?} = \max_b Q(2, b) = \max(0,\ -0.5) = 0$$
 
 Error TD:
 
@@ -246,4 +248,4 @@ Para ver cómo se van llenando las celdas antes del punto de divergencia:
 ![Evolución de la tabla Q]({{ '/23_reinforcement_learning/images/04_q_table_evolution.png' | url }})
 
 Los episodios 1 y 2 producen la misma tabla para SARSA y Q-learning porque en esos pasos el greedy coincide con lo que ε-greedy elige (o las celdas consultadas son cero de todas formas).
-El divergence empieza cuando la tabla tiene valores suficientemente distintos de cero para que la diferencia entre $a' \sim \pi$ y $\max_{a'}$ importe.
+El divergence empieza cuando la tabla tiene valores suficientemente distintos de cero para que la diferencia entre $a' \sim \pi$ y $\max_b$ importe.

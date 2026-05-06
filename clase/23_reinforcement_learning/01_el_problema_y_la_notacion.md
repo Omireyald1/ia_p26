@@ -137,7 +137,9 @@ $Q^\pi$ y $Q^∗$ satisfacen ecuaciones de Bellman (recursivas):
 
 $$Q^\pi(s,a) = \mathbb{E}_{s' \sim T, a' \sim \pi}\left[r + \gamma Q^\pi(s', a')\right]$$
 
-$$Q^∗(s,a) = \mathbb{E}_{s' \sim T}\left[r + \gamma \max_{a'} Q^∗(s', a')\right]$$
+$$Q^∗(s,a) = \mathbb{E}_{s' \sim T}\left[r + \gamma \max_b Q^∗(s', b)\right]$$
+
+($b$ variable muda de optimización — equivalente a $a'$ en la notación estándar)
 
 La única diferencia es cómo se elige la siguiente acción: bajo $\pi$ para $Q^\pi$, como máximo para $Q^∗$.
 
