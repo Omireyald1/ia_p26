@@ -20,6 +20,10 @@ La celda $(s=4, +2)$ está marcada como no disponible porque desde $s=4$ la úni
 Con cada episodio que juega el agente, algunas celdas se actualizan.
 Después de suficientes episodios, la tabla converge a $Q^∗$.
 
+**Dato importante:** tanto SARSA como Q-learning usan exactamente esta misma tabla como única estructura de datos.
+No hay ninguna diferencia en cómo se almacena o se lee — ambos comienzan con todos los valores en cero y actualizan celda a celda tras cada paso.
+La única diferencia entre los dos algoritmos está en **cómo calculan el target** que empuja cada celda hacia su valor correcto.
+
 ---
 
 ## El esqueleto de la actualización TD
@@ -105,6 +109,17 @@ Apunta a la ecuación (1): aprende el valor de la política que se está ejecuta
 $$\textbf{?} = \max_b Q(s', b) \qquad \Longrightarrow \quad \text{Q-learning}$$
 
 Apunta a la ecuación (2): aprende el valor óptimo, sin importar qué acción ejecuta el agente.
+
+Esto da lugar a una forma de pensar en los dos algoritmos que es muy útil:
+
+| | Pregunta que responde $Q(s,a)$ | Converge a |
+|--|-------------------------------|-----------|
+| **SARSA** | *"¿Cuánto vale $a$ si después sigo actuando como ahora — con exploración incluida?"* | $Q^{\pi_\varepsilon}$ |
+| **Q-learning** | *"¿Cuánto vale $a$ si después actúo de la mejor manera posible?"* | $Q^∗$ |
+
+SARSA evalúa el valor de las acciones que *realmente tomas* (incluyendo las exploratorias).
+Q-learning evalúa el valor de la *mejor acción posible* desde cada estado, independientemente de lo que el agente haga en la práctica.
+En una frase: **SARSA aprende el valor de lo que haces; Q-learning el valor de lo que podrías hacer.**
 
 ```
 Actualización TD: Q(s,a) ← Q(s,a) + α [r + γ · ? − Q(s,a)]
