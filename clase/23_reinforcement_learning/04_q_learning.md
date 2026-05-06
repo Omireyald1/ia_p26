@@ -26,6 +26,13 @@ $$\boxed{Q(s,a) \leftarrow Q(s,a) + \alpha\bigl[r + \gamma \max_b Q(s', b) - Q(s
 
 ## Pseudocódigo
 
+**La idea en palabras:**
+Al inicio de cada episodio, el agente simplemente observa el estado $s$ — no elige ninguna acción todavía.
+Dentro del bucle elige $a$ con $\varepsilon$-greedy, ejecuta, observa $(r, s')$ y calcula el máximo sobre todas las acciones posibles en $s'$.
+Ese máximo — no la acción que realmente tomará — es el target.
+Después de actualizar $Q$, avanza a $s'$ y repite.
+No hay ninguna variable de acción que "cargar" de un paso al siguiente: cada paso es autónomo.
+
 ```
 Q_LEARNING(α, γ, ε, num_episodios):
   Inicializa Q[s, a] ← 0 para todo (s, a)
@@ -34,15 +41,22 @@ Q_LEARNING(α, γ, ε, num_episodios):
     Mientras s no sea terminal:
       a ← ε-greedy(Q, s)           ← elegimos a para explorar
       s', r ← ejecutar(a)           ← observamos (s', r)
-      max_q ← max sobre a' de Q[s', a']   ← máximo, NO la acción que tomaremos
+      max_q ← max sobre b de Q[s', b]   ← máximo, NO la acción que tomaremos
       Q[s, a] ← Q[s, a] + α · (r + γ · max_q − Q[s, a])
       s ← s'                         ← avanzamos con solo 4 elementos
 ```
 
-Comparado con SARSA:
-- No hay `a ← ε-greedy(Q, s)` antes del bucle (no necesitamos $a$ previo).
-- No hay `a ← a'` al final (no pasamos la acción entre pasos).
-- El target usa `max`, no `Q[s', a']`.
+**Comparación directa con SARSA:**
+
+| | SARSA | Q-learning |
+|--|-------|------------|
+| ¿Elige acción antes del bucle? | **Sí** — `a ← ε-greedy(Q, s)` | **No** — entra directo |
+| ¿Qué usa como target en $s'$? | `Q[s', a']` — la acción que *realmente* tomará | `max Q[s', b]` — el mejor valor posible |
+| ¿Pasa la acción al siguiente paso? | **Sí** — `a ← a'` | **No** — cada paso es independiente |
+| Elementos del quíntuple/cuádruplo | $(S, A, R, S', A')$ — cinco | $(S, A, R, S')$ — cuatro |
+| Aprende el valor de... | la política $\varepsilon$-greedy que ejecuta | la política greedy óptima |
+
+La única diferencia de fondo está en el target: SARSA pregunta *"¿cuánto vale lo que voy a hacer?"*, Q-learning pregunta *"¿cuánto vale lo mejor que podría hacer?"*.
 
 ---
 
