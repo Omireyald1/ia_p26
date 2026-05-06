@@ -109,13 +109,13 @@ Esta es la tabla en la que vimos el momento de divergencia en la sección anteri
 :::exercise{title="¿A qué converge SARSA?"}
 
 **Con $\varepsilon$ fijo:** SARSA converge a $Q^{\pi_\varepsilon}$ — el valor de la política $\varepsilon$-greedy, no la política greedy pura.
-$Q^{\pi_\varepsilon}(s,a)$ es ligeramente peor que $Q^*(s,a)$ porque el agente sigue explorando ocasionalmente con probabilidad $\varepsilon$.
+$Q^{\pi_\varepsilon}(s,a)$ es ligeramente peor que $Q^{∗}(s,a)$ porque el agente sigue explorando ocasionalmente con probabilidad $\varepsilon$.
 
-**Con $\varepsilon \to 0$ (decrementando gradualmente):** SARSA converge a $Q^*$ (bajo condiciones de convergencia estándar: visitas infinitas y tasa de aprendizaje decreciente).
+**Con $\varepsilon \to 0$ (decrementando gradualmente):** SARSA converge a $Q^{∗}$ (bajo condiciones de convergencia estándar: visitas infinitas y tasa de aprendizaje decreciente).
 
 :::
 
-**¿Por qué SARSA con $\varepsilon$ fijo no converge a $Q^*$?**
+**¿Por qué SARSA con $\varepsilon$ fijo no converge a $Q^{∗}$?**
 Porque la política $\pi_\varepsilon$ nunca es completamente greedy: siempre hay una probabilidad $\varepsilon$ de tomar una acción subóptima.
 SARSA aprende fielmente el valor de esa política — incluyendo sus imperfecciones.
 

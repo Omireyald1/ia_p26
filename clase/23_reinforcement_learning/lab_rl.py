@@ -239,39 +239,62 @@ def _draw_q_table(ax, Q_data, title, show_star=False):
 # Plot 1 — Agent-environment loop
 # ============================================================================
 def plot_agent_env_loop():
-    fig, ax = plt.subplots(figsize=(9, 4))
+    fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 5)
+    ax.set_ylim(0, 5.5)
     ax.set_axis_off()
     ax.set_facecolor("white")
     fig.patch.set_facecolor("white")
 
-    # Boxes
-    _fancy_box(ax, 2.2, 2.5, 3.4, 1.9,
-               "AGENTE",
-               "mantiene  $Q[s, a]$\nelige  $a_t = \\varepsilon$-greedy$(Q, s_t)$\nactualiza $Q$ con $(s_t, a_t, r_t, s_{t+1})$",
-               facecolor="#EBF5FB", edgecolor=COLORS["blue"], fontsize=12)
+    # ── AGENTE box (left) ────────────────────────────────────────────────────
+    box_agent = FancyBboxPatch((0.3, 1.2), 3.8, 3.0,
+                               boxstyle="round,pad=0.08",
+                               facecolor="#EBF5FB", edgecolor=COLORS["blue"],
+                               linewidth=2, zorder=3)
+    ax.add_patch(box_agent)
+    ax.text(2.2, 3.95, "AGENTE", ha="center", va="center",
+            fontsize=13, fontweight="bold", color=COLORS["blue"], zorder=4)
+    ax.text(2.2, 3.30, "mantiene $Q[s, a]$", ha="center", va="center",
+            fontsize=9.5, color=COLORS["dark"], zorder=4)
+    ax.text(2.2, 2.75, "elige $a_t$ con $\\varepsilon$-greedy$(Q, s_t)$", ha="center", va="center",
+            fontsize=9.5, color=COLORS["dark"], zorder=4)
+    ax.text(2.2, 2.20, "actualiza $Q$ con $(s_t, a_t, r_{t+1}, s_{t+1})$", ha="center", va="center",
+            fontsize=9.5, color=COLORS["dark"], zorder=4)
+    ax.text(2.2, 1.55, "(no conoce $T$ ni $R$)", ha="center", va="center",
+            fontsize=8.5, color=COLORS["gray"], style="italic", zorder=4)
 
-    _fancy_box(ax, 7.8, 2.5, 3.4, 1.9,
-               "AMBIENTE",
-               "escalera con costos escondidos\nconoce $T$ y $R$ pero no los revela",
-               facecolor="#FDFEFE", edgecolor=COLORS["gray"], fontsize=12)
+    # ── AMBIENTE box (right) ─────────────────────────────────────────────────
+    box_env = FancyBboxPatch((5.9, 1.2), 3.8, 3.0,
+                             boxstyle="round,pad=0.08",
+                             facecolor="#FDFEFE", edgecolor=COLORS["gray"],
+                             linewidth=2, zorder=3)
+    ax.add_patch(box_env)
+    ax.text(7.8, 3.95, "AMBIENTE", ha="center", va="center",
+            fontsize=13, fontweight="bold", color=COLORS["gray"], zorder=4)
+    ax.text(7.8, 3.30, "escalera con costos escondidos", ha="center", va="center",
+            fontsize=9.5, color=COLORS["dark"], zorder=4)
+    ax.text(7.8, 2.75, "conoce $T(s'|s,a)$ y $R(s,a,s')$", ha="center", va="center",
+            fontsize=9.5, color=COLORS["dark"], zorder=4)
+    ax.text(7.8, 2.20, "pero no los revela al agente", ha="center", va="center",
+            fontsize=9.5, color=COLORS["dark"], zorder=4)
+    ax.text(7.8, 1.55, "(caja negra para el agente)", ha="center", va="center",
+            fontsize=8.5, color=COLORS["gray"], style="italic", zorder=4)
 
-    # Action arrow (top, left to right)
-    ax.annotate("", xy=(6.0, 3.35), xytext=(3.9, 3.35),
-                arrowprops=dict(arrowstyle="-|>", color=COLORS["orange"], lw=2.0))
-    ax.text(4.95, 3.55, "$a_t$ (acción)", ha="center", va="bottom",
-            fontsize=10.5, color=COLORS["orange"], fontweight="bold")
+    # ── Action arrow (top, left to right) ────────────────────────────────────
+    ax.annotate("", xy=(5.85, 3.7), xytext=(4.15, 3.7),
+                arrowprops=dict(arrowstyle="-|>", color=COLORS["orange"], lw=2.2))
+    ax.text(5.0, 4.0, "$a_t$  (acción)", ha="center", va="bottom",
+            fontsize=11, color=COLORS["orange"], fontweight="bold")
 
-    # Observation arrow (bottom, right to left)
-    ax.annotate("", xy=(3.9, 1.65), xytext=(6.0, 1.65),
-                arrowprops=dict(arrowstyle="-|>", color=COLORS["blue"], lw=2.0))
-    ax.text(4.95, 1.28, "$s_{t+1},\\ r_{t+1}$ (observación)", ha="center", va="top",
-            fontsize=10.5, color=COLORS["blue"], fontweight="bold")
+    # ── Observation arrow (bottom, right to left) ────────────────────────────
+    ax.annotate("", xy=(4.15, 1.7), xytext=(5.85, 1.7),
+                arrowprops=dict(arrowstyle="-|>", color=COLORS["blue"], lw=2.2))
+    ax.text(5.0, 1.35, "$s_{t+1},\\ r_{t+1}$  (observación)", ha="center", va="top",
+            fontsize=11, color=COLORS["blue"], fontweight="bold")
 
     ax.set_title(
-        "El bucle agente–ambiente: el agente solo ve $(s_t,\\, a_t,\\, r_t,\\, s_{t+1})$",
-        fontsize=13, color=COLORS["dark"], pad=8)
+        "Bucle agente-ambiente: el agente actúa, observa y aprende — sin ver $T$ ni $R$",
+        fontsize=12, color=COLORS["dark"], pad=10)
 
     _save(fig, "01_agent_env_loop.png")
 
@@ -339,15 +362,81 @@ def plot_staircase_rewards():
 # Plot 3 — Empty Q-table
 # ============================================================================
 def plot_q_table_empty():
-    fig, ax = plt.subplots(figsize=(5, 5))
+    fig, ax = plt.subplots(figsize=(6, 6.2))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
+
     Q_empty = np.full((5, 2), 0.0)
     Q_empty[4, 1] = np.nan
-    _draw_q_table(ax, Q_empty, "Tabla Q inicial — todas las celdas en 0")
-    ax.text(1.05, -0.05,
-            "Cada celda responde: «si estoy en $s$ y tomo $a$,\n"
-            "¿qué retorno espero?»",
-            ha="center", va="top", fontsize=9, color=COLORS["gray"],
-            style="italic", transform=ax.transData)
+
+    ax.set_aspect("equal")
+    ax.set_xlim(-0.5, 2.6)
+    ax.set_ylim(-1.3, 6.0)
+    ax.set_axis_off()
+
+    # Title inside the axes
+    ax.text(1.05, 5.75, "Tabla Q(s, a) — inicial", ha="center", va="center",
+            fontsize=12, fontweight="bold", color=COLORS["dark"])
+    ax.text(1.05, 5.35,
+            "cada celda = retorno esperado desde $s$ tomando $a$ y luego actuando optimamente",
+            ha="center", va="center", fontsize=8.5, color=COLORS["gray"], style="italic")
+
+    col_labels = ["Acción $+1$\n(subir 1 escalon)", "Acción $+2$\n(saltar 2 escalones)"]
+    row_labels = [f"$s={i}$" for i in range(5)]
+
+    cw, rh = 0.95, 0.88
+
+    # Column headers
+    for j, cl in enumerate(col_labels):
+        hx = 0.55 + j * cw
+        rect = plt.Rectangle((hx - cw / 2 + 0.02, 4.92), cw - 0.04, 0.38,
+                              facecolor=COLORS["blue"], edgecolor="white",
+                              linewidth=0.5, zorder=2)
+        ax.add_patch(rect)
+        ax.text(hx, 5.11, cl, ha="center", va="center",
+                fontsize=8, color="white", fontweight="bold")
+
+    # Data cells
+    for i in range(5):
+        # Row label
+        ax.text(-0.2, 4.76 - i * rh, row_labels[i],
+                ha="center", va="center", fontsize=10,
+                color=COLORS["dark"], fontweight="bold")
+
+        for j in range(2):
+            x = 0.55 + j * cw
+            y = 4.76 - i * rh
+
+            if np.isnan(Q_empty[i, j]):
+                fc = "#D5D8DC"
+                val_str = "N/A"
+                txt_col = COLORS["gray"]
+            else:
+                fc = "#FDFEFE"
+                val_str = "Q(" + str(i) + ", " + ("+1" if j==0 else "+2") + ") = 0"
+                txt_col = COLORS["dark"]
+
+            rect = plt.Rectangle((x - cw / 2 + 0.03, y - rh / 2 + 0.04),
+                                  cw - 0.06, rh - 0.08,
+                                  facecolor=fc, edgecolor=COLORS["gray"],
+                                  linewidth=1.0, zorder=2)
+            ax.add_patch(rect)
+            ax.text(x, y, val_str, ha="center", va="center",
+                    fontsize=8.5, color=txt_col, zorder=3)
+
+    # Annotation for the unavailable cell
+    ax.text(1.5, 4.76 - 4 * rh - 0.02, "accion +2\nno disponible\ndesde s=4",
+            ha="center", va="center", fontsize=7.5, color=COLORS["gray"], style="italic")
+
+    # Bottom note
+    ax.text(1.05, -0.85,
+            "Al inicio todo es 0 (no sabemos nada).\n"
+            "Con cada episodio, las celdas visitadas se actualizan.",
+            ha="center", va="center", fontsize=9, color=COLORS["dark"],
+            style="italic",
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="#EBF5FB",
+                      edgecolor=COLORS["blue"], alpha=0.7))
+
     _save(fig, "03_q_table_empty.png")
 
 

@@ -96,7 +96,7 @@ $$Q(0,+2) \leftarrow -2.5 + 0.5 \cdot (-3.0) = -4.00$$
 
 :::exercise{title="¿A qué converge Q-learning?"}
 
-**Q-learning converge a $Q^*$ independientemente de la política de comportamiento**, siempre que:
+**Q-learning converge a $Q^{∗}$ independientemente de la política de comportamiento**, siempre que:
 1. Cada par $(s, a)$ sea visitado infinitas veces (garantizado por $\varepsilon$-greedy con $\varepsilon > 0$).
 2. La tasa de aprendizaje $\alpha$ decrezca apropiadamente (o sea constante y suficientemente pequeña).
 
@@ -106,7 +106,7 @@ No importa si el agente explora mucho o poco — el target siempre apunta a la e
 
 ---
 
-## La $Q^*$ convergida y el círculo completo
+## La $Q^{∗}$ convergida y el círculo completo
 
 Después de ~100 episodios, Q-learning converge a la siguiente tabla:
 
@@ -134,7 +134,7 @@ El círculo se cierra:
 
 > **Q-learning aprendió la misma política óptima que DP** — pero sin conocer $T$ ni $R$, solo interactuando con el ambiente.
 
-En términos formales: $\arg\max_a Q^*(s,a)$ recupera la política del módulo 21, y el retorno óptimo $G_0 = -6$ coincide con el coste mínimo $= 6$ encontrado por iteración de valor.
+En términos formales: $\arg\max_a Q^{∗}(s,a)$ recupera la política del módulo 21, y el retorno óptimo $G_0 = -6$ coincide con el coste mínimo $= 6$ encontrado por iteración de valor.
 
 ---
 

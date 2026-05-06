@@ -18,7 +18,7 @@ Para la escalera: 5 filas (estados 0–4; el estado 5 es terminal y no necesita 
 La celda $(s=4,\; +2)$ está marcada como no disponible porque desde $s=4$ la única acción posible es $+1$.
 
 Con cada episodio que juega el agente, algunas celdas se actualizan.
-Después de suficientes episodios, la tabla converge a $Q^*$.
+Después de suficientes episodios, la tabla converge a $Q^{∗}$.
 
 ---
 
@@ -54,17 +54,17 @@ La pregunta que queda abierta: ¿qué ponemos en el `?`?
 
 Del módulo 21 y de la página anterior, recordamos:
 
-$$Q^\pi(s,a) = \mathbb{E}_{\substack{s' \sim T \\ a' \sim \pi}}\!\bigl[r + \gamma\, Q^\pi(s', a')\bigr] \tag{Eq. 1}$$
+$$Q^\pi(s,a) = \mathbb{E}_{\substack{s' \sim T \\ a' \sim \pi}}\bigl[r + \gamma\, Q^\pi(s', a')\bigr] \tag{Eq. 1}$$
 
-$$Q^*(s,a) = \mathbb{E}_{s' \sim T}\!\bigl[r + \gamma \max_{a'} Q^*(s', a')\bigr] \tag{Eq. 2}$$
+$$Q^{∗}(s,a) = \mathbb{E}_{s' \sim T}\bigl[r + \gamma \max_{a'} Q^{∗}(s', a')\bigr] \tag{Eq. 2}$$
 
 Colocadas juntas, la diferencia salta a la vista:
 
 | | Eq. 1 — valor de $\pi$ | Eq. 2 — valor óptimo |
 |--|------------------------|----------------------|
-| Valor futuro en $s'$ | $Q^\pi(s', a')$ con $a' \sim \pi$ | $\max_{a'} Q^*(s', a')$ |
+| Valor futuro en $s'$ | $Q^\pi(s', a')$ con $a' \sim \pi$ | $\max_{a'} Q^{∗}(s', a')$ |
 | Pregunta que responde | ¿Cuánto vale seguir mi política actual? | ¿Cuánto vale hacer lo mejor posible? |
-| Converge a | $Q^\pi$ — depende de $\pi$ | $Q^*$ — óptimo global |
+| Converge a | $Q^\pi$ — depende de $\pi$ | $Q^{∗}$ — óptimo global |
 
 Ambas ecuaciones son **exactas** cuando $Q$ es la función correcta.
 Las actualizaciones TD son versiones *aproximadas* que usan una muestra $(s, a, r, s')$ en lugar de la esperanza completa.
@@ -133,9 +133,9 @@ La diferencia está en $\pi$:
 
 **SARSA** con $\varepsilon$ fijo: converge a $Q^{\pi_\varepsilon}$ — el valor de la política $\varepsilon$-greedy, no el óptimo exacto.
 
-**SARSA** decrementando $\varepsilon \to 0$ (con condiciones de convergencia estándar): converge a $Q^*$.
+**SARSA** decrementando $\varepsilon \to 0$ (con condiciones de convergencia estándar): converge a $Q^{∗}$.
 
-**Q-learning**: converge a $Q^*$ *independientemente de la política de comportamiento*, siempre que cada par $(s,a)$ sea visitado un número suficiente de veces.
+**Q-learning**: converge a $Q^{∗}$ *independientemente de la política de comportamiento*, siempre que cada par $(s,a)$ sea visitado un número suficiente de veces.
 
 :::
 
