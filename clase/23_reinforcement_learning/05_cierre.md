@@ -12,9 +12,9 @@ summary: "Comparativa SARSA vs Q-learning, límites de la tabla Q, función de a
 | **Política de comportamiento** $\mu$ | $\varepsilon$-greedy | $\varepsilon$-greedy |
 | **Política objetivo** $\pi$ | $\varepsilon$-greedy ($\mu = \pi$) | greedy pura ($\mu \neq \pi$) |
 | **Clasificación** | On-policy | Off-policy |
-| **Convergencia (ε fijo)** | $Q^{\pi_\varepsilon}$ | $Q^{∗}$ |
-| **Convergencia (ε → 0)** | $Q^{∗}$ | $Q^{∗}$ |
-| **Ventaja práctica** | Más seguro en entornos con estados peligrosos | Aprende $Q^{∗}$ más rápido; útil cuando la exploración puede ser costosa |
+| **Convergencia (ε fijo)** | $Q^{\pi_\varepsilon}$ | $Q^∗$ |
+| **Convergencia (ε → 0)** | $Q^∗$ | $Q^∗$ |
+| **Ventaja práctica** | Más seguro en entornos con estados peligrosos | Aprende $Q^∗$ más rápido; útil cuando la exploración puede ser costosa |
 
 ---
 
@@ -112,12 +112,12 @@ flowchart TD
 
 Empezamos con la pregunta que quedó sin respuesta en el módulo 21:
 
-> *¿Cómo encontrar $Q^{∗}$ cuando no conoces $T$ ni $R$?*
+> *¿Cómo encontrar $Q^∗$ cuando no conoces $T$ ni $R$?*
 
 La respuesta es: interactúa con el ambiente, observa $(s, a, r, s')$, y usa la actualización TD para empujar $Q$ hacia la consistencia de Bellman.
 
 La diferencia entre SARSA y Q-learning se reduce a un símbolo: $Q(s',a')$ vs $\max_{a'} Q(s',a')$.
 Ese símbolo determina si el algoritmo aprende el valor de lo que hace (on-policy, SARSA) o el valor de lo que podría hacer óptimamente (off-policy, Q-learning).
 
-Ambos convergen a $Q^{∗}$ con suficiente experiencia y $\varepsilon \to 0$.
+Ambos convergen a $Q^∗$ con suficiente experiencia y $\varepsilon \to 0$.
 Y cuando la tabla ya no cabe — que es casi siempre en problemas reales — la misma idea de bootstrapping TD sobrevive intacta dentro de redes neuronales profundas.

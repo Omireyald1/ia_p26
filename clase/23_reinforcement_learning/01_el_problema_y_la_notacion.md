@@ -9,7 +9,7 @@ Recuerda la escalera del módulo 21.
 Seis estados ($s = 0, \ldots, 5$), dos acciones ($+1$ o $+2$), costos
 $c = [3, 2, 5, 10, 1, 0]$ y el objetivo de llegar a $s=5$ pagando lo menos posible.
 
-Con programación dinámica calculamos $Q^{∗}$ exactamente porque teníamos la tabla de transición $T$ y los costos $R$ escritos explícitamente.
+Con programación dinámica calculamos $Q^∗$ exactamente porque teníamos la tabla de transición $T$ y los costos $R$ escritos explícitamente.
 Ahora imagina que eres el agente parado en $s=0$: no tienes el manual.
 Solo puedes dar un paso, observar a dónde llegaste y cuánto pagaste, y volver a intentarlo.
 
@@ -65,8 +65,6 @@ En cada paso $t$:
 2. Elige una acción $a_t$ según su política.
 3. El ambiente — que sí conoce $T$ y $R$, pero no los revela — transiciona a $s_{t+1} \sim T(\cdot \mid s_t, a_t)$ y devuelve $r_{t+1} = R(s_t, a_t, s_{t+1})$.
 4. El agente observa $(r_{t+1}, s_{t+1})$ y actualiza su conocimiento.
-
-![Bucle agente-ambiente]({{ '/23_reinforcement_learning/images/01_agent_env_loop.png' | url }})
 
 ---
 
@@ -126,37 +124,58 @@ La diferencia con $V^\pi$: $Q^\pi$ especifica también la *primera acción*; $V^
 
 ### Función de valor óptima
 
-$$Q^{∗}(s, a) = \max_\pi Q^\pi(s, a)$$
+$$Q^∗(s, a) = \max_\pi Q^\pi(s, a)$$
 
 **Lectura:** "El mayor retorno posible si en $s$ tomo $a$ y *después* actúo de la mejor manera posible."
 
 Es el máximo sobre todas las políticas posibles.
-Conocer $Q^{∗}$ es suficiente para actuar de manera óptima.
+Conocer $Q^∗$ es suficiente para actuar de manera óptima.
 
 ### Ecuaciones de Bellman
 
-$Q^\pi$ y $Q^{∗}$ satisfacen ecuaciones de Bellman (recursivas):
+$Q^\pi$ y $Q^∗$ satisfacen ecuaciones de Bellman (recursivas):
 
 $$Q^\pi(s,a) = \mathbb{E}_{s' \sim T, a' \sim \pi}\left[r + \gamma Q^\pi(s', a')\right]$$
 
-$$Q^{∗}(s,a) = \mathbb{E}_{s' \sim T}\left[r + \gamma \max_{a'} Q^{∗}(s', a')\right]$$
+$$Q^∗(s,a) = \mathbb{E}_{s' \sim T}\left[r + \gamma \max_{a'} Q^∗(s', a')\right]$$
 
-La única diferencia es cómo se elige la siguiente acción: bajo $\pi$ para $Q^\pi$, como máximo para $Q^{∗}$.
+La única diferencia es cómo se elige la siguiente acción: bajo $\pi$ para $Q^\pi$, como máximo para $Q^∗$.
 
 ---
 
-## ¿Por qué $Q^{∗}$ y no $V^{∗}$?
+![Bucle agente-ambiente]({{ '/23_reinforcement_learning/images/01_agent_env_loop.png' | url }})
 
-Con $V^{∗}$ podrías actuar greedy... pero necesitarías $T$:
+---
 
-$$a^{∗}(s) = \arg\max_{a} \sum_{s'} T(s' \mid s, a)\left[R(s,a,s') + \gamma V^{∗}(s')\right]$$
+## ¿Por qué $Q^∗$ y no $V^∗$?
 
-Con $Q^{∗}$ no necesitas $T$ para nada:
+A primera vista parece contradictorio: la ecuación de Bellman de $Q^∗$ incluye $\mathbb{E}_{s' \sim T}$, que sí involucra $T$.
+¿Cómo puede ser que no necesitemos $T$?
 
-$$\boxed{a^{∗}(s) = \arg\max_{a} Q^{∗}(s, a)}$$
+La respuesta está en **cuándo** se usa $T$:
 
-Solo lees la fila $s$ de tu tabla $Q$ y tomas el máximo.
-Esa es la razón por la que RL se centra en aprender $Q^{∗}$ en lugar de $V^{∗}$.
+| Momento | $V^∗$ | $Q^∗$ |
+|---------|-------|-------|
+| **Aprender** (durante entrenamiento) | Usa $T$ implícitamente vía muestras del ambiente | Usa $T$ implícitamente vía muestras del ambiente |
+| **Actuar** (con la tabla ya aprendida) | **Sigue necesitando $T$** para elegir la acción | **Ya no necesita $T$** — la tabla basta |
+
+La diferencia es concreta. Supón que ya tienes la tabla completa:
+
+**Con $V^∗$ en mano** — elegir la mejor acción en $s$ todavía exige calcular:
+
+$$a^∗(s) = \arg\max_{a} \sum_{s'} T(s' \mid s, a)\left[R(s,a,s') + \gamma V^∗(s')\right]$$
+
+Esa suma requiere $T(s' \mid s, a)$ para cada $s'$ y cada $a$ — exactamente lo que no tienes en RL.
+
+**Con $Q^∗$ en mano** — elegir la mejor acción solo requiere:
+
+$$\boxed{a^∗(s) = \arg\max_{a} Q^∗(s, a)}$$
+
+Lees la fila $s$ de la tabla y tomas el máximo.
+$Q^∗(s,a)$ ya tiene el futuro incorporado: la suma sobre transiciones ocurrió *durante el aprendizaje* y quedó guardada como un número en la celda.
+
+**En una frase:** $T$ aparece en la *definición* de $Q^∗$ porque fue necesaria para aprender el valor correcto.
+Una vez aprendida, la tabla $Q$ es autosuficiente — responde "¿cuánto vale cada acción?" sin ningún modelo del ambiente.
 
 ---
 
@@ -180,12 +199,20 @@ A medida que la tabla $Q$ converge, se suele decrecer $\varepsilon$ gradualmente
 
 ### Monte Carlo: esperar al final del episodio
 
-Del módulo 12 sabemos que podemos estimar $\mathbb{E}[G_t]$ acumulando trayectorias completas y calculando la media:
+Del módulo 12, la idea central es que $\mathbb{E}[X] \approx \frac{1}{N}\sum_{i=1}^N x_i$.
+Aplicado aquí: $Q^\pi(s,a) = \mathbb{E}[G_t \mid s_t=s, a_t=a]$ se puede estimar promediando los retornos reales $G_t$ de todos los episodios en que estuvimos en $(s,a)$.
+
+La actualización incremental equivalente (misma idea, formulación online):
 
 $$Q(s,a) \leftarrow Q(s,a) + \frac{1}{N}\bigl(G_t - Q(s,a)\bigr)$$
 
-Este enfoque — **Monte Carlo** — funciona, pero tiene un problema: hay que esperar a que termine el episodio para conocer $G_t$.
-En episodios largos (o entornos continuos sin fin), eso puede ser muy costoso.
+El problema: $G_t = r_{t+1} + \gamma r_{t+2} + \cdots + \gamma^{T-t} r_T$ es una suma de recompensas *futuras*.
+Para calcularla hay que **esperar hasta el final del episodio** y sumar hacia atrás.
+
+Esto implica tres costos concretos:
+- **Demora**: en un episodio de 1000 pasos, se acumulan 1000 experiencias pero la primera actualización de $Q$ ocurre recién al paso 1001.
+- **Alta varianza**: $G_t$ depende de toda la trayectoria futura; pequeñas variaciones en la exploración producen retornos muy distintos, haciendo el aprendizaje ruidoso.
+- **Inaplicable en entornos continuos**: si no hay estado terminal, nunca llega el "final del episodio" — Monte Carlo no puede arrancar.
 
 ### Diferencia Temporal (TD): actualizar a cada paso
 
@@ -197,7 +224,9 @@ $$\underbrace{r + \gamma Q(s', ?)}_{\text{estimación TD del retorno}} \approx G
 
 La actualización completa es:
 
-$$Q(s,a) \leftarrow Q(s,a) + \alpha\underbrace{\bigl[r + \gamma Q(s', ?) - Q(s,a)\bigr]}_{\delta_t = \text{ error TD}}$$
+$$Q(s,a) \leftarrow Q(s,a) + \alpha \cdot \delta_t$$
+
+$$\delta_t = r + \gamma \cdot Q(s', ?) - Q(s,a) \qquad \text{(error TD)}$$
 
 | Símbolo | Significado |
 |---------|-------------|

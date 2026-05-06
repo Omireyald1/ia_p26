@@ -18,7 +18,7 @@ Para la escalera: 5 filas (estados 0–4; el estado 5 es terminal y no necesita 
 La celda $(s=4, +2)$ está marcada como no disponible porque desde $s=4$ la única acción posible es $+1$.
 
 Con cada episodio que juega el agente, algunas celdas se actualizan.
-Después de suficientes episodios, la tabla converge a $Q^{∗}$.
+Después de suficientes episodios, la tabla converge a $Q^∗$.
 
 ---
 
@@ -28,7 +28,9 @@ La idea central de TD es simple: **compara lo que esperabas con lo que realmente
 
 Formalmente, la actualización tiene esta estructura:
 
-$$Q(s,a) \leftarrow Q(s,a) + \alpha \cdot \underbrace{\bigl[r + \gamma \cdot \textbf{?} - Q(s,a)\bigr]}_{\delta_t \text{ — error TD}}$$
+$$Q(s,a) \leftarrow Q(s,a) + \alpha \cdot \bigl[ r + \gamma \cdot \textbf{?} - Q(s,a) \bigr]$$
+
+El término entre corchetes es el **error TD** $\delta_t$:
 
 Piezas de la fórmula:
 
@@ -45,7 +47,10 @@ Piezas de la fórmula:
 
 ### El error TD $\delta_t$: intuición
 
-$$\boxed{\delta_t = \underbrace{r + \gamma \cdot \textbf{?}}_{\text{nueva estimación}} - \underbrace{Q(s,a)}_{\text{estimación anterior}}}$$
+$$\boxed{\delta_t = (r + \gamma \cdot \textbf{?}) - Q(s,a)}$$
+
+- $r + \gamma \cdot \textbf{?}$ → **nueva estimación** (target TD): lo que el agente cree que valdrá el futuro tras este paso real
+- $Q(s,a)$ → **estimación anterior**: lo que el agente creía antes de ejecutar $a$
 
 Piénsalo como un sistema de aprendizaje por retroalimentación:
 
@@ -68,15 +73,15 @@ Del módulo 21 y de la página anterior, recordamos:
 
 $$Q^\pi(s,a) = \mathbb{E}_{\substack{s' \sim T \\ a' \sim \pi}}\bigl[r + \gamma Q^\pi(s', a')\bigr] \tag{Eq. 1}$$
 
-$$Q^{∗}(s,a) = \mathbb{E}_{s' \sim T}\bigl[r + \gamma \max_{a'} Q^{∗}(s', a')\bigr] \tag{Eq. 2}$$
+$$Q^∗(s,a) = \mathbb{E}_{s' \sim T}\bigl[r + \gamma \max_{a'} Q^∗(s', a')\bigr] \tag{Eq. 2}$$
 
 Colocadas juntas, la diferencia salta a la vista:
 
 | | Eq. 1 — valor de $\pi$ | Eq. 2 — valor óptimo |
 |--|------------------------|----------------------|
-| Valor futuro en $s'$ | $Q^\pi(s', a')$ con $a' \sim \pi$ | $\max_{a'} Q^{∗}(s', a')$ |
+| Valor futuro en $s'$ | $Q^\pi(s', a')$ con $a' \sim \pi$ | $\max_{a'} Q^∗(s', a')$ |
 | Pregunta que responde | ¿Cuánto vale seguir mi política actual? | ¿Cuánto vale hacer lo mejor posible? |
-| Converge a | $Q^\pi$ — depende de $\pi$ | $Q^{∗}$ — óptimo global |
+| Converge a | $Q^\pi$ — depende de $\pi$ | $Q^∗$ — óptimo global |
 
 Ambas ecuaciones son **exactas** cuando $Q$ es la función correcta.
 Las actualizaciones TD son versiones *aproximadas* que usan una muestra $(s, a, r, s')$ en lugar de la esperanza completa.
@@ -145,9 +150,9 @@ La diferencia está en $\pi$:
 
 **SARSA** con $\varepsilon$ fijo: converge a $Q^{\pi_\varepsilon}$ — el valor de la política $\varepsilon$-greedy, no el óptimo exacto.
 
-**SARSA** decrementando $\varepsilon \to 0$ (con condiciones de convergencia estándar): converge a $Q^{∗}$.
+**SARSA** decrementando $\varepsilon \to 0$ (con condiciones de convergencia estándar): converge a $Q^∗$.
 
-**Q-learning**: converge a $Q^{∗}$ *independientemente de la política de comportamiento*, siempre que cada par $(s,a)$ sea visitado un número suficiente de veces.
+**Q-learning**: converge a $Q^∗$ *independientemente de la política de comportamiento*, siempre que cada par $(s,a)$ sea visitado un número suficiente de veces.
 
 :::
 
@@ -159,7 +164,9 @@ La diferencia práctica: Q-learning siempre aprende la política óptima aunque 
 
 Veamos exactamente cuándo y por qué los dos algoritmos producen resultados distintos.
 
-Después de dos episodios sobre la escalera ($\alpha=0.5$, $\gamma=1$, $\varepsilon=0.4$), ambos tienen la misma tabla $Q$:
+### Situación de partida
+
+Después de dos episodios ($\alpha=0.5$, $\gamma=1$, $\varepsilon=0.4$), ambos algoritmos tienen **la misma tabla $Q$**:
 
 | Estado | $+1$ | $+2$ |
 |--------|------|------|
@@ -169,43 +176,66 @@ Después de dos episodios sobre la escalera ($\alpha=0.5$, $\gamma=1$, $\varepsi
 | $s=3$ | $0$ | $0$ |
 | $s=4$ | $0$ | — |
 
-Ahora empieza el **episodio 3**.
-Desde $s=0$, la acción greedy es $+1$ (pues $Q(0,+1)=-1.0 > Q(0,+2)=-2.5$), pero $\varepsilon$-greedy *explora* y elige $a=+2$.
-El ambiente devuelve $s'=2$ y $r=R(s'=2)=-5$.
+### Episodio 3, paso 1 — el momento de la bifurcación
 
-**Situación:** ambos algoritmos están en $s=0$, tomaron $a=+2$, llegaron a $s'=2$ con $r=-5$.
-En $s'=2$: $Q(2,+1)=0$ y $Q(2,+2)=-0.5$.
+**Contexto:** el agente está en $s=0$.
 
-Ahora viene la bifurcación:
+La acción greedy sería $+1$ (porque $Q(0,+1)=-1.0 > Q(0,+2)=-2.5$),
+pero $\varepsilon$-greedy **explora** y elige $a=+2$.
 
-**Q-learning** toma el máximo — no importa qué acción se ejecutará realmente:
+El ambiente responde: $s'=2$, $r=-5$.
 
-$$\textbf{?} = \max_{a'} Q(2, a') = \max(0, -0.5) = 0$$
+**Valores disponibles en $s'=2$:**
 
-$$\delta_{\text{QL}} = -5 + 1 \cdot 0 - (-2.5) = \mathbf{-2.5}$$
+$$Q(2,+1) = 0 \qquad Q(2,+2) = -0.5$$
 
-**SARSA** muestrea la acción que *ejecutará* según $\varepsilon$-greedy en $s'=2$.
-La acción greedy sería $+1$ (valor $0 > -0.5$), pero $\varepsilon$-greedy *explora* y elige $a'=+2$:
+---
 
-$$\textbf{?} = Q(2, a'=+2) = -0.5$$
+### Q-learning: usa siempre el valor máximo en $s'$
 
-$$\delta_{\text{SARSA}} = -5 + 1 \cdot (-0.5) - (-2.5) = \mathbf{-3.0}$$
+No importa qué acción se ejecutará realmente — toma el mejor caso posible:
 
-La tabla se actualiza de forma diferente:
+$$\textbf{?} = \max_{a'} Q(2, a') = \max(0,\ -0.5) = 0$$
 
-| Algoritmo | $\delta$ | Nuevo $Q(0,+2)$ |
-|-----------|----------|-----------------|
-| Q-learning | $-2.5$ | $-2.5 + 0.5 \cdot (-2.5) = -3.75$ |
-| SARSA | $-3.0$ | $-2.5 + 0.5 \cdot (-3.0) = -4.00$ |
+Error TD:
 
-A partir de aquí, las tablas divergen.
+$$\delta = r + \gamma \cdot \textbf{?} - Q(0,+2) = -5 + 1 \cdot 0 - (-2.5) = \mathbf{-2.5}$$
 
-**¿Por qué ocurre esto?**
-SARSA sufrió la penalización de una *exploración* en $s'=2$ — la acción $+2$ tiene valor $-0.5$, peor que el greedy $+1$.
-Q-learning no la sufrió: siempre considera el mejor escenario posible en $s'$, aunque luego explore.
+Nueva celda:
 
-Este es exactamente el precio de ser on-policy: si tu política explora estados malos, aprendes que son malos.
-Si eres off-policy, aprendes el valor óptimo aunque explores.
+$$Q(0,+2) \leftarrow -2.5 + 0.5 \cdot (-2.5) = \mathbf{-3.75}$$
+
+---
+
+### SARSA: usa la acción que *realmente* tomará en $s'$
+
+La política $\varepsilon$-greedy en $s'=2$ elige (greedily) $+1$ con prob. $0.6$, pero en este paso **explora** y elige $a'=+2$:
+
+$$\textbf{?} = Q(2,\ a'=+2) = -0.5$$
+
+Error TD:
+
+$$\delta = r + \gamma \cdot \textbf{?} - Q(0,+2) = -5 + 1 \cdot (-0.5) - (-2.5) = \mathbf{-3.0}$$
+
+Nueva celda:
+
+$$Q(0,+2) \leftarrow -2.5 + 0.5 \cdot (-3.0) = \mathbf{-4.00}$$
+
+---
+
+### Resultado: tablas distintas a partir de este paso
+
+| Algoritmo | Error $\delta$ | Nuevo $Q(0,+2)$ |
+|-----------|---------------|-----------------|
+| Q-learning | $-2.5$ | $-3.75$ |
+| SARSA | $-3.0$ | $-4.00$ |
+
+**¿Por qué difieren?**
+SARSA incorporó la penalización de su propia exploración: eligió $+2$ (valor $-0.5$), que es peor que el greedy $+1$ (valor $0$).
+Q-learning ignoró esa exploración y asumió el mejor caso posible en $s'$.
+
+Ese es el precio de ser **on-policy**: si tu política explora acciones subóptimas, aprendes que son subóptimas.
+Si eres **off-policy**, aprendes el valor óptimo aunque explores.
 
 ---
 

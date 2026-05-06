@@ -9,14 +9,14 @@ layout: layouts/index.njk
 
 ## ¿Por qué este módulo?
 
-En el módulo 21 resolviste la escalera con programación dinámica: dado el MDP $(S, A, T, R, \gamma)$, calculaste $Q^{∗}$ y encontraste la política óptima $0 \to 2 \to 4 \to 5$.
+En el módulo 21 resolviste la escalera con programación dinámica: dado el MDP $(S, A, T, R, \gamma)$, calculaste $Q^∗$ y encontraste la política óptima $0 \to 2 \to 4 \to 5$.
 Pero al final quedó una pregunta abierta:
 
 > **¿Qué haces cuando no conoces $T$ ni $R$?**
 
 Eso es exactamente el problema de aprendizaje por refuerzo (RL).
 El agente solo puede *interactuar* con el ambiente — ejecutar acciones, observar estados y recibir recompensas — sin acceso a las tablas de transición.
-La escalera regresa en este módulo, ahora con costos escondidos: mismas reglas, mismo objetivo, pero el agente tiene que *descubrir* $Q^{∗}$ jugando.
+La escalera regresa en este módulo, ahora con costos escondidos: mismas reglas, mismo objetivo, pero el agente tiene que *descubrir* $Q^∗$ jugando.
 
 ---
 
@@ -26,8 +26,8 @@ Al terminar este módulo podrás:
 
 1. Formalizar el problema RL como un MDP con $T$ y $R$ ocultos, y distinguirlo de la planificación clásica.
 2. Definir trayectoria, episodio y retorno $G_t$ con descuento $\gamma$.
-3. Explicar por qué $Q^{∗}$ es más útil que $V^{∗}$ cuando no conoces $T$.
-4. Derivar la ecuación de Bellman para $Q^\pi$ y para $Q^{∗}$, y señalar la única diferencia entre ellas.
+3. Explicar por qué $Q^∗$ es más útil que $V^∗$ cuando no conoces $T$.
+4. Derivar la ecuación de Bellman para $Q^\pi$ y para $Q^∗$, y señalar la única diferencia entre ellas.
 5. Distinguir política de comportamiento (μ) y política objetivo (π), y clasificar un algoritmo como *on-policy* u *off-policy*.
 6. Implementar SARSA y Q-learning sobre un ambiente tabular y rastrear la evolución de la tabla $Q$ episodio a episodio.
 7. Predecir a qué converge cada algoritmo con $\varepsilon$ fijo y con $\varepsilon \to 0$.
@@ -39,10 +39,10 @@ Al terminar este módulo podrás:
 
 | # | Página | Idea clave |
 |---|--------|------------|
-| 01 | [El problema y la notación](./01_el_problema_y_la_notacion.md) | MDP sin $T$/$R$; retorno $G_t$; definición de $Q^{∗}$ y por qué es mejor que $V^{∗}$ |
+| 01 | [El problema y la notación](./01_el_problema_y_la_notacion.md) | MDP sin $T$/$R$; retorno $G_t$; definición de $Q^∗$ y por qué es mejor que $V^∗$ |
 | 02 | [On-policy vs Off-policy](./02_on_policy_vs_off_policy.md) | La tabla $Q$ como objeto concreto; el error TD $\delta_t$; las dos ecuaciones de Bellman; la bifurcación SARSA / Q-learning |
 | 03 | [SARSA](./03_sarsa.md) | El quintuple $(S,A,R,S',A')$; traza sobre la escalera; convergencia a $Q^{\pi_\varepsilon}$ |
-| 04 | [Q-learning](./04_q_learning.md) | Un símbolo de diferencia; convergencia a $Q^{∗}$; el círculo completo con módulo 21 |
+| 04 | [Q-learning](./04_q_learning.md) | Un símbolo de diferencia; convergencia a $Q^∗$; el círculo completo con módulo 21 |
 | 05 | [Cierre](./05_cierre.md) | Tabla comparativa; límites tabulares; hacia DQN y PPO |
 
 ---
@@ -66,7 +66,7 @@ Al terminar este módulo podrás:
 | [Módulo 12 — Monte Carlo](../12_montecarlo/00_index.md) | Estimación de esperanzas por muestreo; media empírica como aproximación de $\mathbb{E}[X]$ |
 | [Módulo 17 — Multi-Armed Bandits](../17_multi_armed_bandits/00_index.md) | $\varepsilon$-greedy; dilema exploración-explotación; actualización incremental de la media |
 | [Módulo 19 — Cadenas de Markov](../19_cadenas_de_markov/00_index.md) | Propiedad de Markov; distribución estacionaria |
-| [Módulo 21 — Programación Dinámica](../21_programacion_dinamica/00_index.md) | MDP $(S,A,T,R,\gamma)$; iteración de valor; $Q^{∗}$ de la escalera |
+| [Módulo 21 — Programación Dinámica](../21_programacion_dinamica/00_index.md) | MDP $(S,A,T,R,\gamma)$; iteración de valor; $Q^∗$ de la escalera |
 
 ---
 

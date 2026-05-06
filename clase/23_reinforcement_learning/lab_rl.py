@@ -362,79 +362,92 @@ def plot_staircase_rewards():
 # Plot 3 — Empty Q-table
 # ============================================================================
 def plot_q_table_empty():
-    fig, ax = plt.subplots(figsize=(6, 6.2))
+    fig, ax = plt.subplots(figsize=(7, 7))
     fig.patch.set_facecolor("white")
     ax.set_facecolor("white")
 
     Q_empty = np.full((5, 2), 0.0)
     Q_empty[4, 1] = np.nan
 
-    ax.set_aspect("equal")
-    ax.set_xlim(-0.5, 2.6)
-    ax.set_ylim(-1.3, 6.0)
+    cw, rh = 1.2, 0.85          # cell width, cell height (data units)
+    x0 = 0.30                    # x-center of column 0
+    y0 = 4.75                    # y-center of row 0
+    grid_cx = x0 + 0.5 * cw     # horizontal center of the two-column grid
+
+    ax.set_xlim(-1.2, 4.2)
+    ax.set_ylim(-1.5, 6.4)
     ax.set_axis_off()
 
-    # Title inside the axes
-    ax.text(1.05, 5.75, "Tabla Q(s, a) — inicial", ha="center", va="center",
+    # Title
+    ax.text(grid_cx, 6.1,
+            "Tabla $Q(s, a)$ — inicio del aprendizaje",
+            ha="center", va="center",
             fontsize=12, fontweight="bold", color=COLORS["dark"])
-    ax.text(1.05, 5.35,
-            "cada celda = retorno esperado desde $s$ tomando $a$ y luego actuando optimamente",
-            ha="center", va="center", fontsize=8.5, color=COLORS["gray"], style="italic")
-
-    col_labels = ["Acción $+1$\n(subir 1 escalon)", "Acción $+2$\n(saltar 2 escalones)"]
-    row_labels = [f"$s={i}$" for i in range(5)]
-
-    cw, rh = 0.95, 0.88
+    ax.text(grid_cx, 5.74,
+            "Cada celda = retorno esperado si estoy en $s$, tomo $a$ y luego actúo óptimamente",
+            ha="center", va="center",
+            fontsize=8.5, color=COLORS["gray"], style="italic")
 
     # Column headers
+    col_labels = ["Acción $+1$", "Acción $+2$"]
     for j, cl in enumerate(col_labels):
-        hx = 0.55 + j * cw
-        rect = plt.Rectangle((hx - cw / 2 + 0.02, 4.92), cw - 0.04, 0.38,
-                              facecolor=COLORS["blue"], edgecolor="white",
-                              linewidth=0.5, zorder=2)
+        hx = x0 + j * cw
+        rect = plt.Rectangle(
+            (hx - cw / 2 + 0.05, y0 + 0.06), cw - 0.10, 0.44,
+            facecolor=COLORS["blue"], edgecolor="white", linewidth=0.5, zorder=2)
         ax.add_patch(rect)
-        ax.text(hx, 5.11, cl, ha="center", va="center",
-                fontsize=8, color="white", fontweight="bold")
+        ax.text(hx, y0 + 0.28, cl, ha="center", va="center",
+                fontsize=10, color="white", fontweight="bold")
 
-    # Data cells
+    # Rows: label + cells
     for i in range(5):
-        # Row label
-        ax.text(-0.2, 4.76 - i * rh, row_labels[i],
-                ha="center", va="center", fontsize=10,
-                color=COLORS["dark"], fontweight="bold")
+        ry = y0 - i * rh
+
+        # Row label — well to the left of the grid
+        ax.text(-0.55, ry, f"$s = {i}$",
+                ha="center", va="center",
+                fontsize=11, color=COLORS["dark"], fontweight="bold")
 
         for j in range(2):
-            x = 0.55 + j * cw
-            y = 4.76 - i * rh
+            cx = x0 + j * cw
+            na = np.isnan(Q_empty[i, j])
+            fc = "#D5D8DC" if na else "#FDFEFE"
 
-            if np.isnan(Q_empty[i, j]):
-                fc = "#D5D8DC"
-                val_str = "N/A"
-                txt_col = COLORS["gray"]
-            else:
-                fc = "#FDFEFE"
-                val_str = "Q(" + str(i) + ", " + ("+1" if j==0 else "+2") + ") = 0"
-                txt_col = COLORS["dark"]
-
-            rect = plt.Rectangle((x - cw / 2 + 0.03, y - rh / 2 + 0.04),
-                                  cw - 0.06, rh - 0.08,
-                                  facecolor=fc, edgecolor=COLORS["gray"],
-                                  linewidth=1.0, zorder=2)
+            rect = plt.Rectangle(
+                (cx - cw / 2 + 0.05, ry - rh / 2 + 0.05),
+                cw - 0.10, rh - 0.10,
+                facecolor=fc, edgecolor=COLORS["gray"], linewidth=1.0, zorder=2)
             ax.add_patch(rect)
-            ax.text(x, y, val_str, ha="center", va="center",
-                    fontsize=8.5, color=txt_col, zorder=3)
 
-    # Annotation for the unavailable cell
-    ax.text(1.5, 4.76 - 4 * rh - 0.02, "accion +2\nno disponible\ndesde s=4",
-            ha="center", va="center", fontsize=7.5, color=COLORS["gray"], style="italic")
+            if na:
+                ax.text(cx, ry, "—", ha="center", va="center",
+                        fontsize=20, color=COLORS["gray"], zorder=3)
+            else:
+                ax.text(cx, ry, "0", ha="center", va="center",
+                        fontsize=20, color=COLORS["dark"],
+                        fontweight="bold", zorder=3)
+
+    # Arrow annotation for the unavailable cell
+    na_ry = y0 - 4 * rh
+    na_cx = x0 + cw
+    right_edge = na_cx + cw / 2 - 0.06
+
+    ax.annotate(
+        "Acción $+2$ no disponible\ndesde $s = 4$",
+        xy=(right_edge, na_ry),
+        xytext=(right_edge + 0.40, na_ry),
+        ha="left", va="center",
+        fontsize=8.5, color=COLORS["gray"], style="italic",
+        arrowprops=dict(arrowstyle="->", color=COLORS["gray"],
+                        lw=0.9, connectionstyle="arc3,rad=0.0"))
 
     # Bottom note
-    ax.text(1.05, -0.85,
-            "Al inicio todo es 0 (no sabemos nada).\n"
+    ax.text(grid_cx, -1.05,
+            "Al principio no sabemos nada → todo se inicializa en 0.\n"
             "Con cada episodio, las celdas visitadas se actualizan.",
-            ha="center", va="center", fontsize=9, color=COLORS["dark"],
-            style="italic",
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="#EBF5FB",
+            ha="center", va="center",
+            fontsize=9, color=COLORS["dark"], style="italic",
+            bbox=dict(boxstyle="round,pad=0.35", facecolor="#EBF5FB",
                       edgecolor=COLORS["blue"], alpha=0.7))
 
     _save(fig, "03_q_table_empty.png")
@@ -444,31 +457,94 @@ def plot_q_table_empty():
 # Plot 4 — Q-table evolution (3 snapshots: ep0, ep1, ep2)
 # ============================================================================
 def plot_q_table_evolution():
-    fig = plt.figure(figsize=(13, 5.5))
-    gs = GridSpec(1, 3, figure=fig, wspace=0.35)
+    # Q tables at the divergence point (ep 3, step 1: s=0, a=+2, r=-5, s'=2)
+    Q_sarsa_ep3 = Q_AFTER_EP2.copy()
+    Q_sarsa_ep3[0, 1] = -4.00   # SARSA uses the actual next action (explored +2)
 
-    Q0 = np.zeros((5, 2))
-    Q0[4, 1] = np.nan
+    Q_ql_ep3 = Q_AFTER_EP2.copy()
+    Q_ql_ep3[0, 1] = -3.75      # Q-learning uses max (greedy +1 value = 0)
 
-    Q1 = Q_AFTER_EP1.copy()
-    Q1[4, 1] = np.nan
+    fig = plt.figure(figsize=(13, 9.5))
 
-    Q2 = Q_AFTER_EP2.copy()
-    Q2[4, 1] = np.nan
+    # ── Top row: 3 identical snapshots ──────────────────────────────────────
+    gs_top = GridSpec(1, 3, figure=fig,
+                      left=0.04, right=0.96, top=0.86, bottom=0.50, wspace=0.38)
+
+    fig.text(0.50, 0.92,
+             "Episodios 1 y 2 — tabla idéntica para SARSA y Q-learning",
+             ha="center", fontsize=12, fontweight="bold", color=COLORS["dark"])
 
     stages = [
-        (Q0, "Inicial\n(antes del episodio 1)"),
-        (Q1, "Después del episodio 1\n(trayectoria 0→1→3→5)"),
-        (Q2, "Después del episodio 2\n(trayectoria 0→2→4→5)"),
+        (np.zeros((5, 2)),  "Inicial\n(antes del ep. 1)"),
+        (Q_AFTER_EP1,       "Después del ep. 1\n(0→1→3→5)"),
+        (Q_AFTER_EP2,       "Después del ep. 2\n(0→2→4→5)"),
+    ]
+    for k, (Q, title) in enumerate(stages):
+        Q_plot = Q.copy()
+        Q_plot[4, 1] = np.nan
+        ax = fig.add_subplot(gs_top[0, k])
+        _draw_q_table(ax, Q_plot, title)
+        ax.set_aspect("auto")
+
+    # Divider
+    line = plt.Line2D([0.04, 0.96], [0.48, 0.48],
+                      color=COLORS["gray"], linewidth=1.5,
+                      transform=fig.transFigure, zorder=10)
+    fig.add_artist(line)
+
+    # ── Bottom row: divergence ───────────────────────────────────────────────
+    gs_bot = GridSpec(1, 2, figure=fig,
+                      left=0.12, right=0.88, top=0.44, bottom=0.05, wspace=0.55)
+
+    fig.text(0.50, 0.47,
+             "Episodio 3, paso 1 — ¡las tablas divergen!   "
+             "($s=0,\\ a=+2,\\ r=-5,\\ s'=2$)",
+             ha="center", fontsize=12, fontweight="bold", color=COLORS["red"])
+
+    cw, rh = 0.9, 0.95   # cell geometry (must match _draw_q_table)
+
+    diverge_panels = [
+        (Q_sarsa_ep3,  "SARSA  (on-policy)",  COLORS["blue"],
+         -3.0, -4.00,
+         "Usó $a'=+2$ (exploró en $s'=2$)\n"
+         r"$\delta=-5+(-0.5)-(-2.5)=-3.0$"),
+        (Q_ql_ep3,     "Q-learning  (off-policy)", COLORS["orange"],
+         -2.5, -3.75,
+         "Usó $\\max$ en $s'=2$ = 0\n"
+         r"$\delta=-5+0-(-2.5)=-2.5$"),
     ]
 
-    for k, (Q, title) in enumerate(stages):
-        ax = fig.add_subplot(gs[0, k])
-        _draw_q_table(ax, Q, title)
+    for k, (Q_div, algo_title, algo_color, delta, new_val, note) in enumerate(diverge_panels):
+        Q_plot = Q_div.copy()
+        Q_plot[4, 1] = np.nan
+        ax = fig.add_subplot(gs_bot[0, k])
+        _draw_q_table(ax, Q_plot, "")
+        ax.set_aspect("auto")
 
-    fig.suptitle(
-        "Evolución de la tabla $Q$ — idéntica para SARSA y Q-learning en los primeros dos episodios",
-        fontsize=12, color=COLORS["dark"], y=1.01)
+        # Colored algorithm title
+        ax.set_title(algo_title, fontsize=12, fontweight="bold",
+                     color=algo_color, pad=6)
+
+        # Highlight the changed cell: s=0 (i=0), action +2 (j=1)
+        x_cell = 0.55 + 1 * cw
+        y_cell = 5.25 - 1 * rh + rh / 2   # i=0 → row 0
+        hl = plt.Rectangle(
+            (x_cell - cw / 2 + 0.02, y_cell - rh / 2 + 0.03),
+            cw - 0.04, rh - 0.06,
+            facecolor="#FDEDEC", edgecolor=COLORS["red"],
+            linewidth=2.5, zorder=4)
+        ax.add_patch(hl)
+        ax.text(x_cell, y_cell, f"{new_val:.2f}",
+                ha="center", va="center",
+                fontsize=10.5, color=COLORS["red"],
+                fontweight="bold", zorder=5)
+
+        # Note below the table
+        ax.text(1.00, 0.05, note,
+                ha="center", va="bottom", fontsize=9,
+                color=algo_color, style="italic",
+                transform=ax.transData)
+
     _save(fig, "04_q_table_evolution.png")
 
 
