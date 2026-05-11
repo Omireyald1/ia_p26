@@ -48,16 +48,15 @@ Un agente aleatorio dura típicamente 10-20 pasos.
 
 ---
 
-## Los cuatro métodos en comparación
+## Los tres métodos en comparación
 
 | Método | Representación del estado | Tipo de política | ¿Converge en CartPole? | Episodios aprox. para resolver |
 |--------|--------------------------|-----------------|----------------------|-------------------------------|
-| Q-tabla | Discretizado $10^4$ bins | $\varepsilon$-greedy sobre tabla | Apenas (plateau ~50-80) | No resuelve |
 | SARSA | Discretizado $10^4$ bins | $\varepsilon$-greedy on-policy | Apenas (plateau ~50-80) | No resuelve |
 | Q-learning | Discretizado $10^4$ bins | $\varepsilon$-greedy off-policy | Apenas (plateau ~50-80) | No resuelve |
 | DQN | Continuo (4 valores reales) | $\varepsilon$-greedy sobre $Q_\theta$ | Sí | ~300-400 episodios |
 
-Los tres métodos tabulares usan 10 bins por dimensión → $10 \times 10 \times 10 \times 10 = 10{,}000$ estados discretos.
+Los dos métodos tabulares usan 10 bins por dimensión → $10 \times 10 \times 10 \times 10 = 10{,}000$ estados discretos.
 La discretización pierde información: dos estados con ángulos de $11.9°$ y $12.1°$ caen en bins distintos y reciben valores $Q$ completamente independientes.
 DQN no discretiza — procesa los 4 valores directamente y puede interpolar entre estados similares.
 
@@ -94,11 +93,11 @@ Una pérdida que no baja es señal de que la tasa de aprendizaje es demasiado al
 python demo_cartpole.py --compare --episodes 300
 ```
 
-Los cuatro métodos corren en paralelo.
+Los tres métodos corren en secuencia.
 Al final se muestra un gráfico con la media móvil de 50 episodios para cada uno.
 
 La diferencia es visual e inmediata:
-- Q-tabla, SARSA y Q-learning forman tres líneas planas a baja recompensa (~50-80).
+- SARSA y Q-learning forman dos líneas planas a baja recompensa (~50-80).
 - DQN sube continuamente hasta cruzar 475.
 
 ---
@@ -107,7 +106,7 @@ La diferencia es visual e inmediata:
 
 ![Comparación de convergencia]({{ '/23_reinforcement_learning/images/11_convergence_comparison.png' | url }})
 
-Los tres métodos tabulares se estabilizan en recompensas bajas porque la discretización pierde información crítica.
+Los dos métodos tabulares se estabilizan en recompensas bajas porque la discretización pierde información crítica.
 Dos estados con ángulos similares se tratan como completamente distintos, así que el agente no puede generalizar.
 DQN, al operar sobre el vector continuo, aprende que estados similares tienen valores similares — la red interpola de forma natural porque comparte pesos entre todos los estados.
 
@@ -130,9 +129,8 @@ El comportamiento emergente es notable: el carro se mueve suavemente de lado a l
 python demo_cartpole.py --method dqn                     # DQN — recomendado para ver convergencia
 python demo_cartpole.py --method sarsa                   # SARSA on-policy tabular
 python demo_cartpole.py --method qlearning               # Q-learning off-policy tabular
-python demo_cartpole.py --method qtable --speed fast     # Q-tabla, sin animación lenta
 
-# Comparar todos los métodos (terminal + ventana final)
+# Comparar los 3 métodos (terminal + ventana final)
 python demo_cartpole.py --compare --episodes 300
 
 # Ajustar velocidad y duración

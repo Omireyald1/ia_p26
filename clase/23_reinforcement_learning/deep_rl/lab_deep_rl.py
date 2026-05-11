@@ -11,7 +11,7 @@ Genera 6 imágenes en:
     08_dqn_architecture.png      — diagrama de la red neuronal DQN
     09_experience_replay.png     — buffer de repetición de experiencia
     10_target_network.png        — red online vs red objetivo
-    11_convergence_comparison.png — comparación Q-tabla / SARSA / Q-learning / DQN
+    11_convergence_comparison.png — comparación SARSA / Q-learning / DQN
     12_loss_curve.png            — pérdida de entrenamiento DQN
     13_cartpole_frames.png       — fotogramas de un episodio resuelto
 
@@ -372,46 +372,6 @@ def _discretize(obs, bins):
     return i0, i1, i2, i3
 
 
-def run_qtable(n_episodes=500, alpha=0.1, gamma=0.99,
-               eps_start=1.0, eps_end=0.05, eps_decay=0.995):
-    """Q-learning tabular en CartPole-v1 con estado discretizado."""
-    env = gym.make("CartPole-v1")
-    bins = _make_bins()
-    Q = np.zeros((10, 10, 10, 10, 2))
-    eps = eps_start
-    returns = []
-
-    for _ in range(n_episodes):
-        obs, _ = env.reset()
-        state = _discretize(obs, bins)
-        done = False
-        G = 0.0
-
-        while not done:
-            if np.random.random() < eps:
-                action = env.action_space.sample()
-            else:
-                action = int(np.argmax(Q[state]))
-
-            obs2, reward, terminated, truncated, _ = env.step(action)
-            done = terminated or truncated
-            G += reward
-            next_state = _discretize(obs2, bins)
-
-            # Q-learning update (off-policy)
-            best_next = float(np.max(Q[next_state])) if not done else 0.0
-            Q[state][action] += alpha * (
-                reward + gamma * best_next - Q[state][action]
-            )
-            state = next_state
-
-        eps = max(eps_end, eps * eps_decay)
-        returns.append(G)
-
-    env.close()
-    return returns
-
-
 def run_sarsa(n_episodes=500, alpha=0.1, gamma=0.99,
               eps_start=1.0, eps_end=0.05, eps_decay=0.995):
     """SARSA (on-policy) en CartPole-v1 con estado discretizado."""
@@ -465,9 +425,41 @@ def run_sarsa(n_episodes=500, alpha=0.1, gamma=0.99,
 
 def run_qlearning_tabular(n_episodes=500, alpha=0.1, gamma=0.99,
                            eps_start=1.0, eps_end=0.05, eps_decay=0.995):
-    """Q-learning tabular (alias explícito) en CartPole-v1."""
-    return run_qtable(n_episodes=n_episodes, alpha=alpha, gamma=gamma,
-                      eps_start=eps_start, eps_end=eps_end, eps_decay=eps_decay)
+    """Q-learning tabular (off-policy) en CartPole-v1 con estado discretizado."""
+    env = gym.make("CartPole-v1")
+    bins = _make_bins()
+    Q = np.zeros((10, 10, 10, 10, 2))
+    eps = eps_start
+    returns = []
+
+    for _ in range(n_episodes):
+        obs, _ = env.reset()
+        state = _discretize(obs, bins)
+        done = False
+        G = 0.0
+
+        while not done:
+            if np.random.random() < eps:
+                action = env.action_space.sample()
+            else:
+                action = int(np.argmax(Q[state]))
+
+            obs2, reward, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+            G += reward
+            next_state = _discretize(obs2, bins)
+
+            best_next = float(np.max(Q[next_state])) if not done else 0.0
+            Q[state][action] += alpha * (
+                reward + gamma * best_next - Q[state][action]
+            )
+            state = next_state
+
+        eps = max(eps_end, eps * eps_decay)
+        returns.append(G)
+
+    env.close()
+    return returns
 
 
 # ============================================================================
@@ -601,13 +593,11 @@ def run_dqn(n_episodes=500, alpha=1e-3, gamma=0.99,
 # ============================================================================
 # Plot 11 — Comparación de convergencia
 # ============================================================================
-def plot_convergence_comparison(returns_qtable, returns_sarsa,
-                                 returns_qlearning, returns_dqn) -> None:
-    """Curvas de aprendizaje de los 4 métodos superpuestas."""
+def plot_convergence_comparison(returns_sarsa, returns_qlearning, returns_dqn) -> None:
+    """Curvas de aprendizaje de los 3 métodos superpuestas."""
     fig, ax = plt.subplots(figsize=(10, 5))
 
     methods = [
-        ("Q-tabla",    returns_qtable,    COLORS["gray"]),
         ("SARSA",      returns_sarsa,     COLORS["blue"]),
         ("Q-learning", returns_qlearning, COLORS["green"]),
         ("DQN",        returns_dqn,       COLORS["red"]),
@@ -760,8 +750,6 @@ def main() -> None:
     # Entrenamiento de métodos tabulares
     print()
     print("Entrenando métodos tabulares (500 episodios cada uno)...")
-    print("  → Q-tabla...")
-    returns_qtable = run_qtable()
     print("  → SARSA...")
     returns_sarsa = run_sarsa()
     print("  → Q-learning tabular...")
@@ -775,8 +763,7 @@ def main() -> None:
     # Gráficas de resultados
     print()
     print("Generando gráficas de resultados...")
-    plot_convergence_comparison(returns_qtable, returns_sarsa,
-                                returns_qlearning, returns_dqn)
+    plot_convergence_comparison(returns_sarsa, returns_qlearning, returns_dqn)
     plot_loss_curve(loss_history)
 
     # Fotogramas del agente entrenado

@@ -3,8 +3,8 @@ demo_cartpole.py — Demo interactivo de métodos de RL en CartPole-v1.
 
 Uso:
     python demo_cartpole.py --method dqn                       # ventana live con DQN
-    python demo_cartpole.py --method qtable --speed fast       # Q-tabla, actualización rápida
-    python demo_cartpole.py --compare --episodes 300           # comparar 4 métodos
+    python demo_cartpole.py --method qlearning --speed fast    # Q-learning tabular
+    python demo_cartpole.py --compare --episodes 300           # comparar 3 métodos
     python demo_cartpole.py --method sarsa --episodes 200 --speed slow
 
 En modo live se abre una ventana con 4 paneles:
@@ -13,7 +13,7 @@ En modo live se abre una ventana con 4 paneles:
     - Abajo izquierda  : pérdida MSE (DQN) o decaimiento ε (tabular)
     - Abajo derecha    : distribución Q-valores (DQN) o heatmap Q-tabla (tabular)
 
-En modo --compare se ejecutan los 4 métodos en secuencia con barras de progreso
+En modo --compare se ejecutan los 3 métodos en secuencia con barras de progreso
 en terminal y al final se abre una sola ventana con las curvas superpuestas.
 """
 from __future__ import annotations
@@ -63,14 +63,12 @@ COLORS = {
 }
 
 METHOD_COLORS = {
-    "qtable":    COLORS["gray"],
     "sarsa":     COLORS["blue"],
     "qlearning": COLORS["green"],
     "dqn":       COLORS["red"],
 }
 
 METHOD_LABELS = {
-    "qtable":    "Q-tabla",
     "sarsa":     "SARSA",
     "qlearning": "Q-learning",
     "dqn":       "DQN",
@@ -572,10 +570,10 @@ def _train_headless(method: str, n_episodes: int) -> list[float]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def run_compare(n_episodes: int) -> None:
-    """Ejecuta los 4 métodos secuencialmente y muestra la ventana final."""
-    print("\nComparando 4 métodos en CartPole-v1:\n")
+    """Ejecuta los 3 métodos secuencialmente y muestra la ventana final."""
+    print("\nComparando 3 métodos en CartPole-v1:\n")
     all_returns: dict[str, list[float]] = {}
-    for i, m in enumerate(["qtable", "sarsa", "qlearning", "dqn"]):
+    for i, m in enumerate(["sarsa", "qlearning", "dqn"]):
         print(f"[{i+1}/4] {METHOD_LABELS[m]}")
         all_returns[m] = _train_headless(m, n_episodes)
         print()
@@ -588,7 +586,7 @@ def _show_comparison_window(results: dict, n_episodes: int) -> None:
     fig, ax = plt.subplots(figsize=(12, 6))
 
     window = 50
-    for m in ["qtable", "sarsa", "qlearning", "dqn"]:
+    for m in ["sarsa", "qlearning", "dqn"]:
         rets = results.get(m, [])
         if not rets:
             continue
@@ -667,14 +665,14 @@ def parse_args():
         epilog="""
 Ejemplos:
   python demo_cartpole.py --method dqn
-  python demo_cartpole.py --method qtable --speed fast
+  python demo_cartpole.py --method qlearning --speed fast
   python demo_cartpole.py --compare --episodes 300
   python demo_cartpole.py --method sarsa --episodes 200 --speed slow
         """
     )
     p.add_argument(
         "--method",
-        choices=["qtable", "sarsa", "qlearning", "dqn"],
+        choices=["sarsa", "qlearning", "dqn"],
         default="dqn",
         help="Algoritmo a ejecutar (default: dqn)"
     )

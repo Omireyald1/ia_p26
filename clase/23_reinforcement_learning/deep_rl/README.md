@@ -1,7 +1,7 @@
 # Deep RL — CartPole Lab
 
 Live demo and image generation scripts for Module 23 (Reinforcement Learning).
-Trains four methods — Q-table, SARSA, Q-learning, DQN — on CartPole-v1 and lets you
+Trains three methods — SARSA, Q-learning, DQN — on CartPole-v1 and lets you
 watch them learn in real time.
 
 ---
@@ -54,7 +54,7 @@ deactivate
 # Watch DQN learn (recommended first run)
 python demo_cartpole.py --method dqn
 
-# Compare all 4 methods, then see a final summary plot
+# Compare all 3 methods, then see a final summary plot
 python demo_cartpole.py --compare
 ```
 
@@ -62,8 +62,8 @@ python demo_cartpole.py --compare
 
 | Flag | Options | Default | Description |
 |------|---------|---------|-------------|
-| `--method` | `qtable` `sarsa` `qlearning` `dqn` | `dqn` | Algorithm to train |
-| `--compare` | — | off | Run all 4 methods sequentially, show final comparison |
+| `--method` | `sarsa` `qlearning` `dqn` | `dqn` | Algorithm to train |
+| `--compare` | — | off | Run all 3 methods sequentially, show final comparison |
 | `--episodes` | any integer | `500` | Number of training episodes |
 | `--speed` | `fast` `normal` `slow` | `normal` | How often to update the animation window |
 
@@ -84,18 +84,17 @@ python demo_cartpole.py --method dqn
 # Faster run — 200 episodes, update window every 20 steps
 python demo_cartpole.py --method dqn --episodes 200 --speed fast
 
-# Watch a tabular method (Q-table or SARSA or Q-learning)
-python demo_cartpole.py --method qtable
+# Watch a tabular method (SARSA or Q-learning)
 python demo_cartpole.py --method sarsa
 python demo_cartpole.py --method qlearning
 
 # Slow motion — see every step clearly
 python demo_cartpole.py --method dqn --episodes 100 --speed slow
 
-# Compare all 4 methods with 300 episodes each
+# Compare all 3 methods with 300 episodes each
 python demo_cartpole.py --compare --episodes 300
 
-# Quick comparison (150 episodes per method, ~3-4 min total)
+# Quick comparison (150 episodes per method, ~2-3 min total)
 python demo_cartpole.py --compare --episodes 150
 ```
 
@@ -147,11 +146,11 @@ Shows at a glance: current episode, current ε, 50-episode average reward, and (
 
 The per-episode time in the terminal is itself a signal: if episodes are taking 2-4 seconds each, the pole is surviving for hundreds of steps — the agent is solving it.
 
-**With tabular methods (`--method qtable/sarsa/qlearning`):**
+**With tabular methods (`--method sarsa/qlearning`):**
 The reward curve climbs a bit early (the agent learns to avoid the worst actions) but then plateaus around 50-80. The discretization loses too much information — nearby continuous states get treated as unrelated. The Q-table heatmap shows which state regions got visited, but the agent can never generalize across bins.
 
 **With `--compare`:**
-The 4 methods run sequentially in the terminal (with tqdm progress bars). At the end, a single window shows all 4 convergence curves overlaid. The DQN line should climb clearly above the three flat tabular lines.
+The 3 methods run sequentially in the terminal (with tqdm progress bars). At the end, a single window shows all 3 convergence curves overlaid. The DQN line should climb clearly above the two flat tabular lines.
 
 ### Headless environments (no display)
 
@@ -180,7 +179,7 @@ Output goes to `../images/`. Expected runtime: ~5-8 minutes on a modern CPU.
 | 08 | `08_dqn_architecture.png` | Network diagram: 4→64→64→2 with ReLU |
 | 09 | `09_experience_replay.png` | Replay buffer: store arrow + random sample arrow |
 | 10 | `10_target_network.png` | Online vs frozen target network, copy arrow, TD equation |
-| 11 | `11_convergence_comparison.png` | All 4 methods over 500 episodes with rolling averages |
+| 11 | `11_convergence_comparison.png` | All 3 methods over 500 episodes with rolling averages |
 | 12 | `12_loss_curve.png` | DQN MSE loss vs training step with buffer-full annotation |
 | 13 | `13_cartpole_frames.png` | 4 frames from a solved episode (pole stays vertical) |
 

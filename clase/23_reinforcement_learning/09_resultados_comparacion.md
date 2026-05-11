@@ -23,7 +23,6 @@ Con esa advertencia clara, miremos lo que sí muestra esta corrida.
 
 | Método | Primeros 10 ep (avg) | Últimos 50 ep (avg) | Mejor media móvil 50 ep | Mejor episodio | Cruzó 200 en ep | Cruzó 475 en ep |
 |--------|---------------------|---------------------|------------------------|----------------|-----------------|-----------------|
-| Q-tabla | 25.8 | 33.4 | 44.5 | 131 | — | — |
 | SARSA | 23.8 | 44.2 | 61.5 | 247 | — | — |
 | Q-learning | 19.8 | 64.9 | 70.1 | 290 | — | — |
 | DQN | 18.7 | **387.5** | **412.1** | **500** | ep 289 | no alcanzado* |
@@ -35,7 +34,7 @@ El umbral oficial de 475 no se cruzó en esta corrida de 500 episodios — DQN l
 
 ## Métodos tabulares: el problema de cobertura
 
-Los tres métodos tabulares (Q-tabla, SARSA, Q-learning) parten del mismo supuesto:
+Los dos métodos tabulares (SARSA, Q-learning) parten del mismo supuesto:
 *hay una celda en la tabla para cada par $(s, a)$ posible.*
 
 Con 10 bins por dimensión, CartPole tiene $10^4 \times 2 = 20{,}000$ pares estado-acción.
@@ -43,7 +42,6 @@ Con 10 bins por dimensión, CartPole tiene $10^4 \times 2 = 20{,}000$ pares esta
 
 | Método | Pares visitados | Cobertura |
 |--------|----------------|-----------|
-| Q-tabla | 445 / 20 000 | **2.2 %** |
 | SARSA | 499 / 20 000 | **2.5 %** |
 | Q-learning | 692 / 20 000 | **3.5 %** |
 
@@ -132,13 +130,12 @@ Esa generalización es la ventaja decisiva de la aproximación de funciones.
 
 ## Diferencias entre los métodos tabulares
 
-Dentro de los tres métodos tabulares, Q-learning obtiene la mejor recompensa final (64.9 vs 44.2 vs 33.4).
+Q-learning obtiene la mejor recompensa final (64.9 vs 44.2 de SARSA).
 
 Esto es consistente con la teoría:
 
 - **Q-learning** aprende $Q^∗$ directamente (off-policy, usa $\max_b Q(s',b)$) — extrae el máximo valor posible de cada transición, independientemente de la política que la generó.
 - **SARSA** aprende $Q^{\pi_\varepsilon}$ (on-policy, usa $Q(s',a')$ con $a' \sim \pi_\varepsilon$) — el valor de la política que ejecuta, incluyendo el ruido de exploración.
-- **Q-tabla** es estructuralmente idéntico a Q-learning en esta implementación — la diferencia en resultados refleja varianza de muestreo.
 
 La ventaja de Q-learning sobre SARSA se amplifica cuando $\varepsilon$ es alto (mucha exploración), porque SARSA "contamina" su target con acciones exploratorias.
 Con $\varepsilon \to 0$ ambos convergen al mismo resultado.
