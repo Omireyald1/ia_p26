@@ -51,6 +51,7 @@ Al terminar este módulo podrás:
 | 06 | [De la tabla a las redes](./06_de_la_tabla_a_las_redes.md) | CartPole; la sustitución $Q[s,a] \to Q_\theta(s,a)$; experience replay; red objetivo; función de pérdida DQN |
 | 07 | [Gradiente de política](./07_gradiente_de_politica.md) | REINFORCE; Actor-Critic; PPO con clipping; RLHF y ChatGPT |
 | 08 | [Laboratorio aplicado](./08_laboratorio_aplicado.md) | Demo en vivo de 4 métodos en CartPole; setup del entorno; comparación de convergencia |
+| 09 | [Resultados comparativos](./09_resultados_comparacion.md) | Cobertura del espacio de estados (2–3 % tabular vs generalización DQN); fases de aprendizaje; por qué la pérdida DQN sube |
 
 ---
 
